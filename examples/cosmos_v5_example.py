@@ -2,9 +2,9 @@ import os
 import sys
 
 # Updated from v0 to v1 for the cosmosc2 libaray. If you are using cosmos v5
-# you DO NOT need to set the environment variable `COSMOS_VERSION` to equal 5
-# it will default to use 5. You can use this to track requests from an external
-# application to cosmos.
+# you DO NOT need to set the environment variable `COSMOSC2_VERSION` to equal
+# anything it will default to use the libary version. You can use this to
+# track requests from an external application to cosmos.
 
 try:
     os.environ["COSMOSC2_VERSION"]
