@@ -1,0 +1,18 @@
+# general things to ignore
+cacert.pem
+.idea
+build/
+dist/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+*.so
+*~
+.coverage
+.idea
+htmlcov
+
+# due to using tox and pytest
+.tox
+.cache
