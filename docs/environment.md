@@ -57,15 +57,15 @@ except KeyError:
     os.environ["COSMOS_PORT"] = "7777"
 ```
 
-### COSMOS_DEBUG
+### COSMOS_TOKEN
 
-Updated from v0 to v1 for the cosmosc2 libaray. In v1 the libary can log much more of what is happening in the libary. If you wish to enable this you MUST set the environment variable `COSMOS_DEBUG` to equal "DEBUG". If this is not set you will not get log messages if this is an incorrect log level you will get a ValueError.
+In Cosmos v5 the api is password protected by default, so you need to make sure to set the password before you can use the api. If you need to use a different password you can set the environment variable `COSMOS_TOKEN` to the password on your Cosmos v5 instance. If this is not set the password will default to SuperSecret.
 
 ```python
 import os
 
 try:
-    os.environ["COSMOS_DEBUG"]
+    os.environ["COSMOS_TOKEN"]
 except KeyError:
-    os.environ["COSMOS_DEBUG"] = ""
+    os.environ["COSMOS_TOKEN"] = ""
 ```

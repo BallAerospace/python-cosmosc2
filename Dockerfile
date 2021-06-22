@@ -20,15 +20,16 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /devel/
 
-COPY ./ ./cosmosc2/
-
 RUN apk add --no-cache --virtual .build-dependencies \
         gcc musl-dev python3-dev \
     && apk add --update --no-cache git python3 py3-pip \
     && ln -sf python3 /usr/bin/python \
     && python -m pip install --upgrade pip \
     && python -m pip install pytest black flake8 coverage \
-    # && python /devel/cosmosc2/setup.py develop \
-    # && python /devel/cosmosc2/setup.py install \
     && git config --global http.sslVerify false \
     && /sbin/apk del --no-cache .build-dependencies
+
+COPY ./ ./cosmosc2/
+
+# RUN python /devel/cosmosc2/setup.py develop
+# RUN python /devel/cosmosc2/setup.py install
