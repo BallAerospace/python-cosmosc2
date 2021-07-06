@@ -2,7 +2,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 # -*- coding: latin-1 -*-
 """
-json_drb_object.py
+connection.py
 """
 
 # Copyright 2021 Ball Aerospace & Technologies Corp.
@@ -30,7 +30,7 @@ from cosmosc2.environment import (
     MAX_RETRY_COUNT,
     USER_AGENT,
 )
-from cosmosc2.exceptions import CosmosC2ConnectionError
+from cosmosc2.exceptions import CosmosConnectionError
 from cosmosc2.json_rpc import (
     JsonRpcRequest,
     JsonRpcResponse,
@@ -44,14 +44,14 @@ logging.basicConfig(
 )
 
 
-class JsonDRbObject(ContextDecorator):
+class Connection(ContextDecorator):
     """Class to perform JSON-RPC Calls to the COSMOS Server (or other JsonDrb server)
 
-    The JsonDRbObject can be used to call COSMOS server methods directly:
-      server = JsonDRbObject("127.0.0.1", 7777)
+    The Connection can be used to call COSMOS server methods directly:
+      server = Connection("127.0.0.1", 7777)
       server.cmd(...)
       or
-      with JsonDRbObject("127.0.0.1", 7777) as server:
+      with Connection("127.0.0.1", 7777) as server:
         server.cmd(...)
     """
 
@@ -81,7 +81,7 @@ class JsonDRbObject(ContextDecorator):
 
     def __enter__(self):
         if self._shutdown_needed.is_set():
-            raise CosmosC2ConnectionError(
+            raise CosmosConnectionError(
                 "Shutdown needed: {}".format(self._shutdown_needed)
             )
 
@@ -132,7 +132,7 @@ class JsonDRbObject(ContextDecorator):
             while True:
                 logger.debug("write try for request %s", request)
                 if self._shutdown_needed.is_set():
-                    raise CosmosC2ConnectionError(
+                    raise CosmosConnectionError(
                         "shutdown needed event: {}".format(
                             self._shutdown_needed.is_set()
                         )
@@ -142,7 +142,7 @@ class JsonDRbObject(ContextDecorator):
                 try:
                     response = self._make_request(request)
                     return self._handle_response(response)
-                except CosmosC2ConnectionError:
+                except CosmosConnectionError:
                     self.disconnect()
                     self._connection = None
                 time.sleep(1)
@@ -172,7 +172,7 @@ class JsonDRbObject(ContextDecorator):
             logger.debug("connect failed %s", exception_)
             self.disconnect()
             self._connection = None
-            raise CosmosC2ConnectionError(
+            raise CosmosConnectionError(
                 "failed to connection to cosmos"
             ) from exception_
 
@@ -195,7 +195,7 @@ class JsonDRbObject(ContextDecorator):
             logger.debug("response: %s", response_data)
             return response_data
         except OSError as e:
-            raise CosmosC2ConnectionError(
+            raise CosmosConnectionError(
                 "failed to make request: {}".format(request)
             ) from e
 

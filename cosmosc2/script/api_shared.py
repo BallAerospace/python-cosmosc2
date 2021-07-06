@@ -5,7 +5,6 @@ import platform
 import subprocess
 from os import listdir
 from os.path import isfile, isdir
-from cosmosc2.script.script import *
 
 DEFAULT_TLM_POLLING_RATE = 0.25
 

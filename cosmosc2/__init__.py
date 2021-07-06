@@ -13,7 +13,47 @@ __init__.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-__title__ = "cosmosc2"
-__description__ = "Python Support for Ball Aerospace COSMOS v5"
-__url__ = "https://github.com/BallAerospace/python-cosmosc2"
-__version__ = "1.0.1"
+import os
+from cosmosc2.connection import Connection
+
+
+conneciton = None
+
+
+def update_scope(scope: str):
+    global conneciton 
+    conneciton.scope = str(scope)
+    os.environ["COSMOS_SCOPE"] = str(scope)
+
+
+def initialize_script_module(hostname=None, port=None):
+    global conneciton 
+
+    if conneciton:
+        conneciton.disconnect()
+
+    if hostname and port:
+        conneciton = Connection(hostname, port)
+    else:
+        conneciton = Connection()
+
+
+def shutdown_cmd_tlm():
+    conneciton.shutdown()
+
+
+def script_disconnect():
+    conneciton.disconnect()
+
+
+initialize_script_module()
+
+
+from cosmosc2.script.api_shared import *
+from cosmosc2.script.cmd_tlm_server import *
+from cosmosc2.script.commands import *
+from cosmosc2.script.extract import *
+from cosmosc2.script.limits import *
+from cosmosc2.script.scripting import *
+from cosmosc2.script.telemetry import *
+from cosmosc2.script.tools import *

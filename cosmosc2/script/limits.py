@@ -1,36 +1,50 @@
-from cosmosc2.script.script import *
+#!/usr/bin/env python3
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+# -*- coding: latin-1 -*-
+"""
+limits.py
+"""
 
+# Copyright 2021 Ball Aerospace & Technologies Corp.
+# All Rights Reserved.
+#
+# This program is free software; you can modify and/or redistribute it
+# under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; version 3 with
+# attribution addendums as found in the LICENSE.txt
+
+from cosmosc2 import conneciton
 
 def get_out_of_limits():
-    return cosmosc2.script.script.cmd_tlm_server.write("get_out_of_limits")
+    return conneciton.write("get_out_of_limits")
 
 
 def get_overall_limits_state(ignored_items=None):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_overall_limits_state", ignored_items
     )
 
 
 def limits_enabled(*args):
-    return cosmosc2.script.script.cmd_tlm_server.write("limits_enabled?", *args)
+    return conneciton.write("limits_enabled?", *args)
 
 
 def enable_limits(*args):
-    return cosmosc2.script.script.cmd_tlm_server.write("enable_limits", *args)
+    return conneciton.write("enable_limits", *args)
 
 
 def disable_limits(*args):
-    return cosmosc2.script.script.cmd_tlm_server.write("disable_limits", *args)
+    return conneciton.write("disable_limits", *args)
 
 
 def get_stale(with_limits_only=False, target_name=None):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_stale", with_limits_only, target_name
     )
 
 
 def get_limits(target_name, packet_name, item_name, limits_set=None):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_limits", target_name, packet_name, item_name, limits_set
     )
 
@@ -49,7 +63,7 @@ def set_limits(
     persistence=None,
     enabled=True,
 ):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "set_limits",
         target_name,
         packet_name,
@@ -67,44 +81,44 @@ def set_limits(
 
 
 def get_limits_groups():
-    return cosmosc2.script.script.cmd_tlm_server.write("get_limits_groups")
+    return conneciton.write("get_limits_groups")
 
 
 def enable_limits_group(group_name):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "enable_limits_group", group_name
     )
 
 
 def disable_limits_group(group_name):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "disable_limits_group", group_name
     )
 
 
 def get_limits_sets():
-    return cosmosc2.script.script.cmd_tlm_server.write("get_limits_sets")
+    return conneciton.write("get_limits_sets")
 
 
 def set_limits_set(limits_set):
-    return cosmosc2.script.script.cmd_tlm_server.write("set_limits_set", limits_set)
+    return conneciton.write("set_limits_set", limits_set)
 
 
 def get_limits_set():
-    return cosmosc2.script.script.cmd_tlm_server.write("get_limits_set")
+    return conneciton.write("get_limits_set")
 
 
 def subscribe_limits_events(queue_size=1000):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "subscribe_limits_events", queue_size
     )
 
 
 def unsubscribe_limits_events(id_):
-    return cosmosc2.script.script.cmd_tlm_server.write("unsubscribe_limits_events", id_)
+    return conneciton.write("unsubscribe_limits_events", id_)
 
 
 def get_limits_event(id_, non_block=False):
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_limits_event", id_, non_block
     )

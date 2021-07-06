@@ -1,4 +1,19 @@
-from cosmosc2.script.script import *
+#!/usr/bin/env python3
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+# -*- coding: latin-1 -*-
+"""
+telemetry.py
+"""
+
+# Copyright 2021 Ball Aerospace & Technologies Corp.
+# All Rights Reserved.
+#
+# This program is free software; you can modify and/or redistribute it
+# under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; version 3 with
+# attribution addendums as found in the LICENSE.txt
+
+from cosmosc2 import conneciton
 
 
 def tlm(*args):
@@ -8,7 +23,7 @@ def tlm(*args):
     or
       tlm('target_name packet_name item_name')
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("tlm", *args)
+    return conneciton.write("tlm", *args)
 
 
 def tlm_raw(*args):
@@ -18,7 +33,7 @@ def tlm_raw(*args):
     or
       tlm_raw('target_name packet_name item_name')
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("tlm_raw", *args)
+    return conneciton.write("tlm_raw", *args)
 
 
 def tlm_formatted(*args):
@@ -28,7 +43,7 @@ def tlm_formatted(*args):
     or
       tlm_formatted('target_name packet_name item_name')
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("tlm_formatted", *args)
+    return conneciton.write("tlm_formatted", *args)
 
 
 def tlm_with_units(*args):
@@ -38,11 +53,11 @@ def tlm_with_units(*args):
     or
       tlm_with_units('target_name packet_name item_name')
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("tlm_with_units", *args)
+    return conneciton.write("tlm_with_units", *args)
 
 
 def tlm_variable(*args):
-    return cosmosc2.script.script.cmd_tlm_server.write("tlm_variable", *args)
+    return conneciton.write("tlm_variable", *args)
 
 
 def set_tlm(*args):
@@ -53,7 +68,7 @@ def set_tlm(*args):
     or
       set_tlm("target_name packet_name item_name = value")
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("set_tlm", *args)
+    return conneciton.write("set_tlm", *args)
 
 
 def set_tlm_raw(*args):
@@ -64,7 +79,7 @@ def set_tlm_raw(*args):
     or
       set_tlm_raw("target_name packet_name item_name = value")
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("set_tlm_raw", *args)
+    return conneciton.write("set_tlm_raw", *args)
 
 
 def inject_tlm(
@@ -77,7 +92,7 @@ def inject_tlm(
     create_new_logs=False,
 ):
     """Injects a packet into the system as if it was received from an interface"""
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "inject_tlm",
         target_name,
         packet_name,
@@ -96,7 +111,7 @@ def override_tlm(*args):
     or
       override_tlm("target_name packet_name item_name = value")
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("override_tlm", *args)
+    return conneciton.write("override_tlm", *args)
 
 
 def override_tlm_raw(*args):
@@ -106,7 +121,7 @@ def override_tlm_raw(*args):
     or
       override_tlm_raw("target_name packet_name item_name = value")
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("override_tlm_raw", *args)
+    return conneciton.write("override_tlm_raw", *args)
 
 
 def normalize_tlm(*args):
@@ -116,7 +131,7 @@ def normalize_tlm(*args):
     or
       normalize_tlm("target_name packet_name item_name")
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("normalize_tlm", *args)
+    return conneciton.write("normalize_tlm", *args)
 
 
 def get_tlm_packet(target_name, packet_name, value_types="CONVERTED"):
@@ -125,7 +140,7 @@ def get_tlm_packet(target_name, packet_name, value_types="CONVERTED"):
     Usage:
       values = get_tlm_packet(target_name, packet_name, <:RAW, :CONVERTED, :FORMATTED, :WITH_UNITS>)
     """
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_tlm_packet", target_name, packet_name, value_types
     )
 
@@ -139,7 +154,7 @@ def get_tlm_values(items, value_types="CONVERTED"):
     Usage:
       values = get_tlm_values([[target_name, packet_name, item_name], ...], <:RAW, :CONVERTED, :FORMATTED, :WITH_UNITS>)
     """
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_tlm_values", items, value_types
     )
 
@@ -148,29 +163,29 @@ def get_tlm_list(target_name):
     """Gets the packets for a given target name. Returns an array of arrays
     consisting of packet names and packet descriptions.
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("get_tlm_list", target_name)
+    return conneciton.write("get_tlm_list", target_name)
 
 
 def get_tlm_item_list(target_name, packet_name):
     """Gets all the telemetry mnemonics for a given target and packet. Returns an
     array of arrays consisting of item names, item states, and item descriptions"""
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_tlm_item_list", target_name, packet_name
     )
 
 
 def get_target_list():
     """Gets the list of all defined targets."""
-    return cosmosc2.script.script.cmd_tlm_server.write("get_target_list")
+    return conneciton.write("get_target_list")
 
 
 def get_tlm_details(items):
-    return cosmosc2.script.script.cmd_tlm_server.write("get_tlm_details", items)
+    return conneciton.write("get_tlm_details", items)
 
 
 def get_tlm_buffer(target_name, packet_name):
     """Returns the buffer from the telemetry packet."""
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_tlm_buffer", target_name, packet_name
     )
 
@@ -181,7 +196,7 @@ def subscribe_packet_data(packets, queue_size=1000):
     Usage:
       id = subscribe_packet_data([[target_name,packet_name], ...], <queue_size>)
     """
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "subscribe_packet_data", packets, queue_size
     )
 
@@ -192,11 +207,11 @@ def unsubscribe_packet_data(id_):
     Usage:
       unsubscribe_packet_data(id)
     """
-    return cosmosc2.script.script.cmd_tlm_server.write("unsubscribe_packet_data", id_)
+    return conneciton.write("unsubscribe_packet_data", id_)
 
 
 def get_packet_data(id_, non_block=False):
     """DEPRECATED - Currently the only option on python until we have config file parsing though"""
-    return cosmosc2.script.script.cmd_tlm_server.write(
+    return conneciton.write(
         "get_packet_data", id_, non_block
     )
