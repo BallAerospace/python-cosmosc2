@@ -16,7 +16,7 @@ json_rpc/response.py
 import json
 
 from cosmosc2.environment import JSON_RPC_VERSION
-from cosmosc2.exceptions import CosmosC2ResponseError
+from cosmosc2.exceptions import CosmosResponseError
 from cosmosc2.json_rpc.base import JsonRpc
 from cosmosc2.json_rpc.error import JsonRpcError
 
@@ -54,9 +54,9 @@ class JsonRpcResponse(JsonRpc):
         try:
             # Verify the jsonrpc version is correct and there is an ID
             if hash_["jsonrpc"] != JSON_RPC_VERSION:
-                raise CosmosC2ResponseError(msg)
+                raise CosmosResponseError(msg)
         except KeyError as e:
-            raise CosmosC2ResponseError(msg, response_data) from e
+            raise CosmosResponseError(msg, response_data) from e
 
         try:
             return JsonRpcErrorResponse.from_hash(hash_)

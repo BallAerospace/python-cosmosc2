@@ -16,7 +16,7 @@ json_rpc/request.py
 import json
 
 from cosmosc2.environment import JSON_RPC_VERSION
-from cosmosc2.exceptions import CosmosC2RequestError
+from cosmosc2.exceptions import CosmosRequestError
 from cosmosc2.json_rpc.base import JsonRpc
 
 
@@ -77,7 +77,7 @@ class JsonRpcRequest(JsonRpc):
                 raise ValueError("message jsonrpc version: {}".format(hash_["jsonrpc"]))
             return cls.from_hash(hash_)
         except (ValueError, KeyError) as e:
-            raise CosmosC2RequestError(msg) from e
+            raise CosmosRequestError(msg) from e
         except Exception as e:
             raise RuntimeError(msg) from e
 

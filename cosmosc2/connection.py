@@ -20,7 +20,7 @@ from http.client import HTTPConnection
 from threading import RLock, Event
 from contextlib import ContextDecorator
 
-from cosmosc2 import __title__
+from cosmosc2.__version__ import __title__
 from cosmosc2.environment import (
     COSMOS_SCOPE,
     COSMOS_TOKEN,

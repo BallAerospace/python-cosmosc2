@@ -1,10 +1,24 @@
+#!/usr/bin/env python3
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
+# -*- coding: latin-1 -*-
+"""
+api_shared.py
+"""
+
+# Copyright 2021 Ball Aerospace & Technologies Corp.
+# All Rights Reserved.
+#
+# This program is free software; you can modify and/or redistribute it
+# under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; version 3 with
+# attribution addendums as found in the LICENSE.txt
+
+
 import time
-import os
 import logging
-import platform
-import subprocess
-from os import listdir
-from os.path import isfile, isdir
+
+from cosmosc2 import (extract, telemetry)
+from cosmosc2.exceptions import CosmosCheckError
 
 DEFAULT_TLM_POLLING_RATE = 0.25
 
@@ -46,7 +60,7 @@ def check(*args, **kwargs):
     or
     check('target_name packet_name item_name > 1')
     """
-    return _check(cosmosc2.script.telemetry.tlm, *args)
+    return _check(telemetry.tlm, *args)
 
 
 def check_formatted(*args, **jkwargs):
@@ -58,7 +72,7 @@ def check_formatted(*args, **jkwargs):
     or
     check('target_name packet_name item_name > 1')
     """
-    return _check(cosmosc2.script.telemetry.tlm_formatted, *args)
+    return _check(telemetry.tlm_formatted, *args)
 
 
 def check_with_units(*args):
@@ -70,7 +84,7 @@ def check_with_units(*args):
     or
     check('target_name packet_name item_name > 1')
     """
-    return _check(cosmosc2.script.telemetry.tlm_with_units, *args)
+    return _check(telemetry.tlm_with_units, *args)
 
 
 def check_raw(*args):
@@ -82,7 +96,7 @@ def check_raw(*args):
     or
     check('target_name packet_name item_name > 1')
     """
-    return _check(cosmosc2.script.telemetry.tlm_raw, *args)
+    return _check(telemetry.tlm_raw, *args)
 
 
 def _check_tolerance(method, *args):
@@ -122,7 +136,7 @@ def _check_tolerance(method, *args):
             logger = logging.getLogger("cosmosc2")
             logger.info(message)
         else:
-            raise CheckError(message)
+            raise CosmosCheckError(message)
     else:
         range_bottom = expected_value - tolerance
         range_top = expected_value + tolerance
@@ -135,7 +149,7 @@ def _check_tolerance(method, *args):
             logger.info("{:s} was within {:s}".format(check_str, range_str))
         else:
             message = "{:s} failed to be within {:s}".format(check_str, range_str)
-            raise CheckError(message)
+            raise CosmosCheckError(message)
 
 
 def check_tolerance(*args):
@@ -147,7 +161,7 @@ def check_tolerance(*args):
     or
     check_tolerance('target_name packet_name item_name', expected_value, tolerance)
     """
-    return _check_tolerance(cosmosc2.script.telemetry.tlm, *args)
+    return _check_tolerance(telemetry.tlm, *args)
 
 
 def check_tolerance_raw(*args):
@@ -159,7 +173,7 @@ def check_tolerance_raw(*args):
     or
     check_tolerance_raw('target_name packet_name item_name', expected_value, tolerance)
     """
-    return _check_tolerance(cosmosc2.script.telemetry.tlm_raw, *args)
+    return _check_tolerance(telemetry.tlm_raw, *args)
 
 
 def check_expression(exp_to_eval, locals=None):
@@ -173,7 +187,7 @@ def check_expression(exp_to_eval, locals=None):
         logger.info("CHECK: {:s} is TRUE".format(exp_to_eval))
     else:
         message = "CHECK: {:s} is FALSE".format(exp_to_eval)
-        raise CheckError(message)
+        raise CosmosCheckError(message)
 
 
 def wait(*args):
@@ -213,7 +227,7 @@ def _wait_tolerance(raw, *args):
         polling_rate,
     ) = wait_tolerance_process_args(args, type_string)
     start_time = time.time()
-    value = tlm_variable(target_name, packet_name, item_name, type)
+    value = telemetry.tlm_variable(target_name, packet_name, item_name, type)
     if isinstance(value, list):
         expected_value, tolerance = array_tolerance_process_args(
             len(value), expected_value, tolerance, type_string
@@ -359,7 +373,7 @@ def _wait_check(raw, *args):
         logger.info("{:s} success {:s}".format(check_str, with_value_str))
     else:
         message = "{:s} failed {:s}".format(check_str, with_value_str)
-        raise CheckError(message)
+        raise CosmosCheckError(message)
     return time_float
 
 
@@ -401,7 +415,7 @@ def _wait_check_tolerance(raw, *args):
         polling_rate,
     ) = wait_tolerance_process_args(args, type_string)
     start_time = time.time()
-    value = tlm_variable(target_name, packet_name, item_name, type)
+    value = telemetry.tlm_variable(target_name, packet_name, item_name, type)
     if isinstance(value, list):
         expected_value, tolerance = array_tolerance_process_args(
             len(value), expected_value, tolerance, type_string
@@ -440,7 +454,7 @@ def _wait_check_tolerance(raw, *args):
             logger = logging.getLogger("cosmosc2")
             logger.info(message)
         else:
-            raise CheckError(message)
+            raise CosmosCheckError(message)
     else:
         success, value = cosmos_script_wait_implementation_tolerance(
             target_name,
@@ -466,7 +480,7 @@ def _wait_check_tolerance(raw, *args):
             logger.info("{:s} was within {:s}".format(check_str, range_str))
         else:
             message = "{:s} failed to be within {:s}".format(check_str, range_str)
-            raise CheckError(message)
+            raise CosmosCheckError(message)
     return time_float
 
 
@@ -498,7 +512,7 @@ def wait_check_expression(
         message = "CHECK: {:s} is FALSE after waiting {:g} seconds".format(
             exp_to_eval, time_float
         )
-        raise CheckError(message)
+        raise CosmosCheckError(message)
     return time_float
 
 
@@ -519,7 +533,7 @@ def _wait_packet(
         type = "CHECK"
     else:
         type = "WAIT"
-    initial_count = cosmosc2.script.telemetry.tlm(
+    initial_count = telemetry.tlm(
         target_name, packet_name, "RECEIVED_COUNT"
     )
     start_time = time.time()
@@ -554,7 +568,7 @@ def _wait_packet(
             time_float,
         )
         if check:
-            raise CheckError(message)
+            raise CosmosCheckError(message)
         else:
             logger.warning(message)
     return time_float
@@ -598,7 +612,7 @@ def check_process_args(args, function_name):
             packet_name,
             item_name,
             comparison_to_eval,
-        ) = extract_fields_from_check_text(args[0])
+        ) = extract.extract_fields_from_check_text(args[0])
     elif length == 4:
         target_name = args[0]
         packet_name = args[1]
@@ -617,7 +631,7 @@ def check_process_args(args, function_name):
 def check_tolerance_process_args(args, function_name):
     length = len(args)
     if length == 3:
-        target_name, packet_name, item_name = extract_fields_from_tlm_text(args[0])
+        target_name, packet_name, item_name = extract.extract_fields_from_tlm_text(args[0])
         expected_value = args[1]
         tolerance = abs(args[2])
     elif length == 5:
@@ -703,7 +717,7 @@ def wait_process_args(args, function_name, value_type):
             packet_name,
             item_name,
             comparison_to_eval,
-        ) = extract_fields_from_check_text(args[0])
+        ) = extract.extract_fields_from_check_text(args[0])
         timeout = args[1]
         if length == 3:
             polling_rate = args[2]
@@ -751,7 +765,7 @@ def wait_process_args(args, function_name, value_type):
 def wait_tolerance_process_args(args, function_name):
     length = len(args)
     if length == 4 or length == 5:
-        target_name, packet_name, item_name = extract_fields_from_tlm_text(args[0])
+        target_name, packet_name, item_name = extract.extract_fields_from_tlm_text(args[0])
         expected_value = args[1]
         tolerance = abs(args[2])
         timeout = args[3]
@@ -823,7 +837,7 @@ def wait_check_process_args(args, function_name):
             packet_name,
             item_name,
             comparison_to_eval,
-        ) = extract_fields_from_check_text(args[0])
+        ) = extract.extract_fields_from_check_text(args[0])
         timeout = args[1]
         if length == 3:
             polling_rate = args[2]
@@ -872,7 +886,7 @@ def _cosmos_script_wait_implementation(
 
     while True:
         work_start = time.time()
-        value = cosmosc2.script.telemetry.tlm_variable(
+        value = telemetry.tlm_variable(
             target_name, packet_name, item_name, value_type
         )
         if eval(exp_to_eval):
@@ -890,7 +904,7 @@ def _cosmos_script_wait_implementation(
         canceled = cosmos_script_sleep(sleep_time)
 
         if canceled:
-            value = tlm_variable(target_name, packet_name, item_name, value_type)
+            value = telemetry.tlm_variable(target_name, packet_name, item_name, value_type)
             if eval(exp_to_eval):
                 return [True, value]
             else:
@@ -1021,84 +1035,4 @@ def check_eval(target_name, packet_name, item_name, comparison_to_eval, value):
         logger.info("{:s} success {:s}".format(check_str, value_str))
     else:
         message = "{:s} failed {:s}".format(check_str, value_str)
-        raise CheckError(message)
-
-
-#######################################
-# Methods accessing tlm_viewer
-#######################################
-
-
-def display(
-    display_name, x_pos=None, y_pos=None, system_filename="system.txt", port=7778
-):
-    write_tlm_viewer("display", display_name, x_pos, y_pos, system_filename, port)
-
-
-def clear(display_name, system_filename="system.txt", port=7778):
-    write_tlm_viewer("clear", display_name, None, None, system_filename, port)
-
-
-def clear_all(target=None, system_filename="system.txt", port=7778):
-    write_tlm_viewer("clear_all", target, None, None, system_filename, port)
-
-
-def write_tlm_viewer(
-    tlm_viewer_cmd,
-    display_name=None,
-    x_pos=None,
-    y_pos=None,
-    system_filename="system.txt",
-    port=7778,
-):
-    max_retries = 60
-    retry_count = 0
-    tlm_viewer = JsonDRbObject("localhost", port)
-    while True:
-        try:
-            if tlm_viewer_cmd == "display":
-                tlm_viewer.write("display", display_name, x_pos, y_pos)
-            elif tlm_viewer_cmd == "clear":
-                tlm_viewer.write("clear", display_name)
-            else:
-                tlm_viewer.write("clear_all", display_name)
-            break
-        except DRbConnError:
-            # No Listening Tlm Viewer - So Start One
-            canceled = cosmos_script_sleep(1)
-            if not canceled:
-                retry_count += 1
-                start_tlm_viewer(system_filename)
-                if retry_count < max_retries:
-                    continue
-                else:
-                    raise RuntimeError(
-                        "Unable to Successfully Start Listening Telemetry Viewer: {:s} could not be {:s}".format(
-                            display_name, action
-                        )
-                    )
-        except Exception as e:
-            tlm_viewer.disconnect()
-            raise e
-    tlm_viewer.disconnect()
-
-
-def start_tlm_viewer(system_file="system.txt"):
-    mac_app = "/".join([cosmosc2.top_level.USERPATH, "tools", "mac", "TlmViewer.app"])
-
-    if platform.system == "Darwin" and os.path.isfile(mac_app):
-        subprocess.Popen(
-            "open '{:s}' --args --system {:s}".format(mac_app, system_file)
-        )
-    else:
-        cmd_name = "ruby"
-        if platform.system() == "Windows":
-            cmd_name += "w"  # Windows uses rubyw to avoid creating a DOS shell
-        subprocess.Popen(
-            "{:s} '{:s}' --system {:s}".format(
-                cmd_name,
-                "/".join([cosmosc2.top_level.USERPATH, "tools", "TlmViewer"]),
-                system_file,
-            )
-        )
-    cosmos_script_sleep(1)
+        raise CosmosCheckError(message)

@@ -15,7 +15,7 @@ environment.py
 
 import os
 
-from cosmosc2 import __title__, __version__
+from cosmosc2.__version__ import __title__, __version__
 
 
 _cosmosc2_version = "COSMOSC2_VERSION"

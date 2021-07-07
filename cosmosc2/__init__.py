@@ -49,11 +49,10 @@ def script_disconnect():
 initialize_script_module()
 
 
-from cosmosc2.script.api_shared import *
-from cosmosc2.script.cmd_tlm_server import *
-from cosmosc2.script.commands import *
-from cosmosc2.script.extract import *
-from cosmosc2.script.limits import *
-from cosmosc2.script.scripting import *
-from cosmosc2.script.telemetry import *
-from cosmosc2.script.tools import *
+from cosmosc2.api_shared import *
+from cosmosc2.cmd_tlm_server import *
+from cosmosc2.commands import *
+from cosmosc2.extract import *
+from cosmosc2.limits import *
+from cosmosc2.telemetry import *
+from cosmosc2.tools import *

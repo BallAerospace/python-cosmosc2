@@ -14,10 +14,8 @@ commands.py
 # attribution addendums as found in the LICENSE.txt
 
 import logging
-from cosmosc2 import (
-    conneciton,
-    convert_to_value,
-)
+from cosmosc2 import conneciton
+from cosmosc2.extract import convert_to_value
 from cosmosc2.exceptions import CosmosHazardousError
 
 
