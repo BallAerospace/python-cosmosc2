@@ -7,7 +7,7 @@ test_json_rpc_response.py
 
 import unittest
 
-from cosmosc2.exceptions import CosmosC2ResponseError
+from cosmosc2.exceptions import CosmosResponseError
 from cosmosc2.json_rpc.response import (
     JsonRpcResponse,
     JsonRpcSuccessResponse,
@@ -65,7 +65,7 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"id": 107, "result": 0}'
-        with self.assertRaises(CosmosC2ResponseError) as context:
+        with self.assertRaises(CosmosResponseError) as context:
             JsonRpcResponse.from_json(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
@@ -74,7 +74,7 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"jsonrpc": "1.0", "result": {}}'
-        with self.assertRaises(CosmosC2ResponseError) as context:
+        with self.assertRaises(CosmosResponseError) as context:
             JsonRpcResponse.from_json(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
@@ -83,7 +83,7 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"jsonrpc": "1.0", "id": 107, "result": 0}'
-        with self.assertRaises(CosmosC2ResponseError) as context:
+        with self.assertRaises(CosmosResponseError) as context:
             JsonRpcResponse.from_json(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
