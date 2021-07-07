@@ -19,6 +19,5 @@ from cosmosc2.json_rpc.response import (
     JsonRpcResponse,
     JsonRpcErrorResponse,
     JsonRpcSuccessResponse,
-    convert_bytearray_to_string_raw,
     convert_json_class,
 )

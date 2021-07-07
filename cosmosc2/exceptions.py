@@ -22,12 +22,17 @@ class CosmosConnectionError(CosmosError):
     pass
 
 
+class CosmosRetryError(CosmosError):
+    pass
+
+
 class CosmosRequestError(CosmosError):
     pass
 
 
 class CosmosResponseError(CosmosError):
     pass
+
 
 class CosmosCheckError(RuntimeError):
     pass

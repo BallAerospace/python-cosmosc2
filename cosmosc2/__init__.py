@@ -17,33 +17,33 @@ import os
 from cosmosc2.connection import Connection
 
 
-conneciton = None
+link = None
 
 
 def update_scope(scope: str):
-    global conneciton 
-    conneciton.scope = str(scope)
+    global link
+    link.scope = str(scope)
     os.environ["COSMOS_SCOPE"] = str(scope)
 
 
 def initialize_script_module(hostname=None, port=None):
-    global conneciton 
+    global link
 
-    if conneciton:
-        conneciton.disconnect()
+    if link:
+        link.disconnect()
 
     if hostname and port:
-        conneciton = Connection(hostname, port)
+        link = Connection(hostname, port)
     else:
-        conneciton = Connection()
+        link = Connection()
 
 
 def shutdown_cmd_tlm():
-    conneciton.shutdown()
+    link.shutdown()
 
 
 def script_disconnect():
-    conneciton.disconnect()
+    link.disconnect()
 
 
 initialize_script_module()

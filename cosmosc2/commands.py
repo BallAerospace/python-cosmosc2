@@ -14,7 +14,7 @@ commands.py
 # attribution addendums as found in the LICENSE.txt
 
 import logging
-from cosmosc2 import conneciton
+from cosmosc2 import link
 from cosmosc2.extract import convert_to_value
 from cosmosc2.exceptions import CosmosHazardousError
 
@@ -94,7 +94,7 @@ def _cmd(cmd, cmd_no_hazardous, *args, **kwargs):
 
     while True:
         try:
-            data = conneciton.write(cmd, *args)
+            data = link.json_rpc_request(cmd, *args)
             if "error" not in data:
                 target_name, cmd_name, cmd_params = data
                 _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous)
@@ -107,7 +107,7 @@ def _cmd(cmd, cmd_no_hazardous, *args, **kwargs):
                     target_name,
                     cmd_name,
                     cmd_params,
-                ) = conneciton.write(cmd_no_hazardous, *args)
+                ) = link.json_rpc_request(cmd_no_hazardous, *args)
                 _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous)
             else:
                 if not prompt_for_script_abort():
@@ -197,55 +197,47 @@ def cmd_raw_no_checks(*args):
 
 def send_raw(interface_name, data):
     """Sends raw data through an interface"""
-    return conneciton.write("send_raw", interface_name, data)
+    return link.json_rpc_request("send_raw", interface_name, data)
 
 
 def send_raw_file(interface_name, filename):
     """Sends raw data through an interface from a file"""
     with open(filename, "rb") as file:
         data = file.read()
-    return conneciton.write("send_raw", interface_name, data)
+    return link.json_rpc_request("send_raw", interface_name, data)
 
 
 def get_cmd_list(target_name):
     """Returns all the target commands as an array of arrays listing the command name and description."""
-    return conneciton.write("get_cmd_list", target_name)
+    return link.json_rpc_request("get_cmd_list", target_name)
 
 
 def get_cmd_param_list(target_name, cmd_name):
     """Returns all the parameters for given command as an array of arrays
     containing the parameter name, default value, states, description, units
     full name, units abbreviation, and whether it is required."""
-    return conneciton.write(
-        "get_cmd_param_list", target_name, cmd_name
-    )
+    return link.json_rpc_request("get_cmd_param_list", target_name, cmd_name)
 
 
 def get_cmd_hazardous(target_name, cmd_name, cmd_params=None):
     """Returns whether a command is hazardous (true or false)"""
     if cmd_params is None:
         cmd_params = {}
-    return conneciton.write(
-        "get_cmd_hazardous", target_name, cmd_name, cmd_params
-    )
+    return link.json_rpc_request("get_cmd_hazardous", target_name, cmd_name, cmd_params)
 
 
 def get_cmd_value(target_name, command_name, parameter_name, value_type="CONVERTED"):
     """Returns a value from the specified command"""
-    return conneciton.write(
+    return link.json_rpc_request(
         "get_cmd_value", target_name, command_name, parameter_name, value_type
     )
 
 
 def get_cmd_time(target_name=None, command_name=None):
     """Returns the time the most recent command was sent"""
-    return conneciton.write(
-        "get_cmd_time", target_name, command_name
-    )
+    return link.json_rpc_request("get_cmd_time", target_name, command_name)
 
 
 def get_cmd_buffer(target_name, command_name):
     """Returns the buffer from the most recent specified command"""
-    return conneciton.write(
-        "get_cmd_buffer", target_name, command_name
-    )
+    return link.json_rpc_request("get_cmd_buffer", target_name, command_name)

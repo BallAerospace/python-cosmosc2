@@ -13,38 +13,35 @@ limits.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-from cosmosc2 import conneciton
+from cosmosc2 import link
+
 
 def get_out_of_limits():
-    return conneciton.write("get_out_of_limits")
+    return link.json_rpc_request("get_out_of_limits")
 
 
 def get_overall_limits_state(ignored_items=None):
-    return conneciton.write(
-        "get_overall_limits_state", ignored_items
-    )
+    return link.json_rpc_request("get_overall_limits_state", ignored_items)
 
 
 def limits_enabled(*args):
-    return conneciton.write("limits_enabled?", *args)
+    return link.json_rpc_request("limits_enabled?", *args)
 
 
 def enable_limits(*args):
-    return conneciton.write("enable_limits", *args)
+    return link.json_rpc_request("enable_limits", *args)
 
 
 def disable_limits(*args):
-    return conneciton.write("disable_limits", *args)
+    return link.json_rpc_request("disable_limits", *args)
 
 
 def get_stale(with_limits_only=False, target_name=None):
-    return conneciton.write(
-        "get_stale", with_limits_only, target_name
-    )
+    return link.json_rpc_request("get_stale", with_limits_only, target_name)
 
 
 def get_limits(target_name, packet_name, item_name, limits_set=None):
-    return conneciton.write(
+    return link.json_rpc_request(
         "get_limits", target_name, packet_name, item_name, limits_set
     )
 
@@ -63,7 +60,7 @@ def set_limits(
     persistence=None,
     enabled=True,
 ):
-    return conneciton.write(
+    return link.json_rpc_request(
         "set_limits",
         target_name,
         packet_name,
@@ -81,44 +78,36 @@ def set_limits(
 
 
 def get_limits_groups():
-    return conneciton.write("get_limits_groups")
+    return link.json_rpc_request("get_limits_groups")
 
 
 def enable_limits_group(group_name):
-    return conneciton.write(
-        "enable_limits_group", group_name
-    )
+    return link.json_rpc_request("enable_limits_group", group_name)
 
 
 def disable_limits_group(group_name):
-    return conneciton.write(
-        "disable_limits_group", group_name
-    )
+    return link.json_rpc_request("disable_limits_group", group_name)
 
 
 def get_limits_sets():
-    return conneciton.write("get_limits_sets")
+    return link.json_rpc_request("get_limits_sets")
 
 
 def set_limits_set(limits_set):
-    return conneciton.write("set_limits_set", limits_set)
+    return link.json_rpc_request("set_limits_set", limits_set)
 
 
 def get_limits_set():
-    return conneciton.write("get_limits_set")
+    return link.json_rpc_request("get_limits_set")
 
 
 def subscribe_limits_events(queue_size=1000):
-    return conneciton.write(
-        "subscribe_limits_events", queue_size
-    )
+    return link.json_rpc_request("subscribe_limits_events", queue_size)
 
 
 def unsubscribe_limits_events(id_):
-    return conneciton.write("unsubscribe_limits_events", id_)
+    return link.json_rpc_request("unsubscribe_limits_events", id_)
 
 
 def get_limits_event(id_, non_block=False):
-    return conneciton.write(
-        "get_limits_event", id_, non_block
-    )
+    return link.json_rpc_request("get_limits_event", id_, non_block)

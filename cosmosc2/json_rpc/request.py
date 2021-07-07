@@ -60,6 +60,10 @@ class JsonRpcRequest(JsonRpc):
         """Returns the request identifier"""
         return self["id"]
 
+    def to_hash(self):
+        """Returns the request in a string"""
+        return _convert_bytearray_to_string_raw(self)
+
     @classmethod
     def from_json(cls, request_data):
         """Creates and returns a JsonRpcRequest object from a JSON encoded String.
@@ -94,3 +98,21 @@ class JsonRpcRequest(JsonRpc):
             hash_.get("keyword_params", {}).get("scope"),
             *hash_.get("params", []),
         )
+
+
+def _convert_bytearray_to_string_raw(object_):
+    if isinstance(object_, (bytes, bytearray)):
+        return object_.decode("latin-1")
+    elif isinstance(object_, dict):
+        for key, value in object_.items():
+            object_[key] = _convert_bytearray_to_string_raw(value)
+        return object_
+    elif isinstance(object_, (tuple, list)):
+        object_ = list(object_)
+        index = 0
+        for value in object_:
+            object_[index] = _convert_bytearray_to_string_raw(value)
+            index += 1
+        return object_
+    else:
+        return object_

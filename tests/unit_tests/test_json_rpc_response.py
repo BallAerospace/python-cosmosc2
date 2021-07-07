@@ -21,7 +21,7 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"jsonrpc": "2.0", "id": 107, "result": 0}'
-        response = JsonRpcResponse.from_json(json_response_example)
+        response = JsonRpcResponse.from_bytes(json_response_example)
         self.assertEqual(response.json_rpc, "2.0")
         self.assertIsNotNone(response.id)
         self.assertEqual(response.result, 0)
@@ -66,7 +66,7 @@ class TestJsonRpc(unittest.TestCase):
         """
         json_response_example = b'{"id": 107, "result": 0}'
         with self.assertRaises(CosmosResponseError) as context:
-            JsonRpcResponse.from_json(json_response_example)
+            JsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_bad_response_missing_id(self):
@@ -75,7 +75,7 @@ class TestJsonRpc(unittest.TestCase):
         """
         json_response_example = b'{"jsonrpc": "1.0", "result": {}}'
         with self.assertRaises(CosmosResponseError) as context:
-            JsonRpcResponse.from_json(json_response_example)
+            JsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_bad_response_version(self):
@@ -84,7 +84,7 @@ class TestJsonRpc(unittest.TestCase):
         """
         json_response_example = b'{"jsonrpc": "1.0", "id": 107, "result": 0}'
         with self.assertRaises(CosmosResponseError) as context:
-            JsonRpcResponse.from_json(json_response_example)
+            JsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_error_response(self):
@@ -108,7 +108,7 @@ class TestJsonRpc(unittest.TestCase):
         """
         json_response_example = b"foobar"
         with self.assertRaises(Exception) as context:
-            JsonRpcResponse.from_json(json_response_example)
+            JsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("msg" in context.exception)
 
 

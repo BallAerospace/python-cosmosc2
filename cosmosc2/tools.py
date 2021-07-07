@@ -13,7 +13,7 @@ tools.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-from cosmosc2 import conneciton
+from cosmosc2 import link
 
 ###########################
 # Telemetry Screen methods
@@ -21,13 +21,11 @@ from cosmosc2 import conneciton
 
 # Get the organized list of available telemetry screens
 def get_screen_list(config_filename=None, force_refresh=False):
-    return conneciton.write(
-        "get_screen_list", config_filename, force_refresh
-    )
+    return link.json_rpc_request("get_screen_list", config_filename, force_refresh)
 
 
 # Get a specific screen definition
 def get_screen_definition(screen_full_name, config_filename=None, force_refresh=False):
-    return conneciton.write(
+    return link.json_rpc_request(
         "get_screen_definition", screen_full_name, config_filename, force_refresh
     )

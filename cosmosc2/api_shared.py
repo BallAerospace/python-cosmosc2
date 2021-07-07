@@ -17,7 +17,7 @@ api_shared.py
 import time
 import logging
 
-from cosmosc2 import (extract, telemetry)
+from cosmosc2 import extract, telemetry
 from cosmosc2.exceptions import CosmosCheckError
 
 DEFAULT_TLM_POLLING_RATE = 0.25
@@ -533,9 +533,7 @@ def _wait_packet(
         type = "CHECK"
     else:
         type = "WAIT"
-    initial_count = telemetry.tlm(
-        target_name, packet_name, "RECEIVED_COUNT"
-    )
+    initial_count = telemetry.tlm(target_name, packet_name, "RECEIVED_COUNT")
     start_time = time.time()
     success, value = cosmos_script_wait_implementation(
         target_name,
@@ -631,7 +629,9 @@ def check_process_args(args, function_name):
 def check_tolerance_process_args(args, function_name):
     length = len(args)
     if length == 3:
-        target_name, packet_name, item_name = extract.extract_fields_from_tlm_text(args[0])
+        target_name, packet_name, item_name = extract.extract_fields_from_tlm_text(
+            args[0]
+        )
         expected_value = args[1]
         tolerance = abs(args[2])
     elif length == 5:
@@ -765,7 +765,9 @@ def wait_process_args(args, function_name, value_type):
 def wait_tolerance_process_args(args, function_name):
     length = len(args)
     if length == 4 or length == 5:
-        target_name, packet_name, item_name = extract.extract_fields_from_tlm_text(args[0])
+        target_name, packet_name, item_name = extract.extract_fields_from_tlm_text(
+            args[0]
+        )
         expected_value = args[1]
         tolerance = abs(args[2])
         timeout = args[3]
@@ -886,9 +888,7 @@ def _cosmos_script_wait_implementation(
 
     while True:
         work_start = time.time()
-        value = telemetry.tlm_variable(
-            target_name, packet_name, item_name, value_type
-        )
+        value = telemetry.tlm_variable(target_name, packet_name, item_name, value_type)
         if eval(exp_to_eval):
             return [True, value]
         if time.time() >= end_time:
@@ -904,7 +904,9 @@ def _cosmos_script_wait_implementation(
         canceled = cosmos_script_sleep(sleep_time)
 
         if canceled:
-            value = telemetry.tlm_variable(target_name, packet_name, item_name, value_type)
+            value = telemetry.tlm_variable(
+                target_name, packet_name, item_name, value_type
+            )
             if eval(exp_to_eval):
                 return [True, value]
             else:

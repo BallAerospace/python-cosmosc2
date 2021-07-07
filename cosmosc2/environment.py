@@ -24,6 +24,8 @@ _cosmos_token = "COSMOS_TOKEN"
 
 _default_scope = "COSMOS_SCOPE"
 
+_default_schema = "COSMOS_SCHEMA"
+
 _default_hostname = "COSMOS_HOSTNAME"
 
 _default_port = "COSMOS_PORT"
@@ -35,6 +37,8 @@ _log_level = "COSMOS_LOG_LEVEL"
 _max_retry_count = "COSMOS_MAX_RETRY_COUNT"
 
 _user_agent = "COSMOS_USER_AGENT"
+
+COSMOS_SCHEMA = os.environ.get(_default_schema, "http")
 
 COSMOS_HOSTNAME = os.environ.get(_default_hostname, "127.0.0.1")
 
