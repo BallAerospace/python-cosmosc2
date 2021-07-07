@@ -68,7 +68,7 @@ class JsonRpcResponse(JsonRpc):
         except KeyError:
             pass
 
-        raise CosmosC2ResponseError(msg, response_data)
+        raise CosmosResponseError(msg, response_data)
 
 
 def convert_bytearray_to_string_raw(object_):
