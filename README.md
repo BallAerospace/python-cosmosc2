@@ -29,10 +29,6 @@ py -m pip install venv
 py -m venv venv
 ```
 
-> Note:
-> 
-> If Windows cannot find virtualenv.exe, see Install virtualenv. You can either add the executable’s home directory to your PATH variable, or just include the full path in your command line. If you aren’t sure where python.exe is installed, see Where’s My Python?.
-
 ### Activate the Environment
 
 Now that we have a virtual environment, we need to activate it.
