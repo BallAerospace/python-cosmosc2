@@ -72,5 +72,4 @@ for i in commands:
 
 update_scope("UPDATE")
 
-script_disconnect()
-shutdown_cmd_tlm()
+shutdown()

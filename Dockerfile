@@ -25,7 +25,7 @@ RUN apk add --no-cache --virtual .build-dependencies \
     && apk add --update --no-cache git python3 py3-pip \
     && ln -sf python3 /usr/bin/python \
     && python -m pip install --upgrade pip \
-    && python -m pip install pytest black flake8 coverage \
+    && python -m pip install -r requirements-dev.txt \
     && git config --global http.sslVerify false \
     && /sbin/apk del --no-cache .build-dependencies
 

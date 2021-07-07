@@ -26,7 +26,7 @@ def update_scope(scope: str):
     os.environ["COSMOS_SCOPE"] = str(scope)
 
 
-def initialize_script_module(hostname=None, port=None):
+def initialize_module(hostname=None, port=None):
     global link
 
     if link:
@@ -38,19 +38,15 @@ def initialize_script_module(hostname=None, port=None):
         link = Connection()
 
 
-def shutdown_cmd_tlm():
+def shutdown():
     link.shutdown()
 
 
-def script_disconnect():
-    link.disconnect()
-
-
-initialize_script_module()
+initialize_module()
 
 
 from cosmosc2.api_shared import *
-from cosmosc2.cmd_tlm_server import *
+from cosmosc2.cosmos_api import *
 from cosmosc2.commands import *
 from cosmosc2.extract import *
 from cosmosc2.limits import *
