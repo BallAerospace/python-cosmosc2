@@ -13,7 +13,7 @@ telemetry.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-from cosmosc2 import link
+import cosmosc2
 
 
 def tlm(*args):
@@ -23,7 +23,7 @@ def tlm(*args):
     or
       tlm('target_name packet_name item_name')
     """
-    return link.json_rpc_request("tlm", *args)
+    return cosmosc2.LINK.json_rpc_request("tlm", *args)
 
 
 def tlm_raw(*args):
@@ -33,7 +33,7 @@ def tlm_raw(*args):
     or
       tlm_raw('target_name packet_name item_name')
     """
-    return link.json_rpc_request("tlm_raw", *args)
+    return cosmosc2.LINK.json_rpc_request("tlm_raw", *args)
 
 
 def tlm_formatted(*args):
@@ -43,7 +43,7 @@ def tlm_formatted(*args):
     or
       tlm_formatted('target_name packet_name item_name')
     """
-    return link.json_rpc_request("tlm_formatted", *args)
+    return cosmosc2.LINK.json_rpc_request("tlm_formatted", *args)
 
 
 def tlm_with_units(*args):
@@ -53,11 +53,11 @@ def tlm_with_units(*args):
     or
       tlm_with_units('target_name packet_name item_name')
     """
-    return link.json_rpc_request("tlm_with_units", *args)
+    return cosmosc2.LINK.json_rpc_request("tlm_with_units", *args)
 
 
 def tlm_variable(*args):
-    return link.json_rpc_request("tlm_variable", *args)
+    return cosmosc2.LINK.json_rpc_request("tlm_variable", *args)
 
 
 def set_tlm(*args):
@@ -68,7 +68,7 @@ def set_tlm(*args):
     or
       set_tlm("target_name packet_name item_name = value")
     """
-    return link.json_rpc_request("set_tlm", *args)
+    return cosmosc2.LINK.json_rpc_request("set_tlm", *args)
 
 
 def set_tlm_raw(*args):
@@ -79,7 +79,7 @@ def set_tlm_raw(*args):
     or
       set_tlm_raw("target_name packet_name item_name = value")
     """
-    return link.json_rpc_request("set_tlm_raw", *args)
+    return cosmosc2.LINK.json_rpc_request("set_tlm_raw", *args)
 
 
 def inject_tlm(
@@ -92,7 +92,7 @@ def inject_tlm(
     create_new_logs=False,
 ):
     """Injects a packet into the system as if it was received from an interface"""
-    return link.json_rpc_request(
+    return cosmosc2.LINK.json_rpc_request(
         "inject_tlm",
         target_name,
         packet_name,
@@ -111,7 +111,7 @@ def override_tlm(*args):
     or
       override_tlm("target_name packet_name item_name = value")
     """
-    return link.json_rpc_request("override_tlm", *args)
+    return cosmosc2.LINK.json_rpc_request("override_tlm", *args)
 
 
 def override_tlm_raw(*args):
@@ -121,7 +121,7 @@ def override_tlm_raw(*args):
     or
       override_tlm_raw("target_name packet_name item_name = value")
     """
-    return link.json_rpc_request("override_tlm_raw", *args)
+    return cosmosc2.LINK.json_rpc_request("override_tlm_raw", *args)
 
 
 def normalize_tlm(*args):
@@ -131,7 +131,7 @@ def normalize_tlm(*args):
     or
       normalize_tlm("target_name packet_name item_name")
     """
-    return link.json_rpc_request("normalize_tlm", *args)
+    return cosmosc2.LINK.json_rpc_request("normalize_tlm", *args)
 
 
 def get_tlm_packet(target_name, packet_name, value_types="CONVERTED"):
@@ -140,7 +140,7 @@ def get_tlm_packet(target_name, packet_name, value_types="CONVERTED"):
     Usage:
       values = get_tlm_packet(target_name, packet_name, <:RAW, :CONVERTED, :FORMATTED, :WITH_UNITS>)
     """
-    return link.json_rpc_request(
+    return cosmosc2.LINK.json_rpc_request(
         "get_tlm_packet", target_name, packet_name, value_types
     )
 
@@ -154,34 +154,34 @@ def get_tlm_values(items, value_types="CONVERTED"):
     Usage:
       values = get_tlm_values([[target_name, packet_name, item_name], ...], <:RAW, :CONVERTED, :FORMATTED, :WITH_UNITS>)
     """
-    return link.json_rpc_request("get_tlm_values", items, value_types)
+    return cosmosc2.LINK.json_rpc_request("get_tlm_values", items, value_types)
 
 
 def get_tlm_list(target_name):
     """Gets the packets for a given target name. Returns an array of arrays
     consisting of packet names and packet descriptions.
     """
-    return link.json_rpc_request("get_tlm_list", target_name)
+    return cosmosc2.LINK.json_rpc_request("get_tlm_list", target_name)
 
 
 def get_tlm_item_list(target_name, packet_name):
     """Gets all the telemetry mnemonics for a given target and packet. Returns an
     array of arrays consisting of item names, item states, and item descriptions"""
-    return link.json_rpc_request("get_tlm_item_list", target_name, packet_name)
+    return cosmosc2.LINK.json_rpc_request("get_tlm_item_list", target_name, packet_name)
 
 
 def get_target_list():
     """Gets the list of all defined targets."""
-    return link.json_rpc_request("get_target_list")
+    return cosmosc2.LINK.json_rpc_request("get_target_list")
 
 
 def get_tlm_details(items):
-    return link.json_rpc_request("get_tlm_details", items)
+    return cosmosc2.LINK.json_rpc_request("get_tlm_details", items)
 
 
 def get_tlm_buffer(target_name, packet_name):
     """Returns the buffer from the telemetry packet."""
-    return link.json_rpc_request("get_tlm_buffer", target_name, packet_name)
+    return cosmosc2.LINK.json_rpc_request("get_tlm_buffer", target_name, packet_name)
 
 
 def subscribe_packet_data(packets, queue_size=1000):
@@ -190,7 +190,7 @@ def subscribe_packet_data(packets, queue_size=1000):
     Usage:
       id = subscribe_packet_data([[target_name,packet_name], ...], <queue_size>)
     """
-    return link.json_rpc_request("subscribe_packet_data", packets, queue_size)
+    return cosmosc2.LINK.json_rpc_request("subscribe_packet_data", packets, queue_size)
 
 
 def unsubscribe_packet_data(id_):
@@ -199,9 +199,9 @@ def unsubscribe_packet_data(id_):
     Usage:
       unsubscribe_packet_data(id)
     """
-    return link.json_rpc_request("unsubscribe_packet_data", id_)
+    return cosmosc2.LINK.json_rpc_request("unsubscribe_packet_data", id_)
 
 
 def get_packet_data(id_, non_block=False):
     """DEPRECATED - Currently the only option on python until we have config file parsing though"""
-    return link.json_rpc_request("get_packet_data", id_, non_block)
+    return cosmosc2.LINK.json_rpc_request("get_packet_data", id_, non_block)

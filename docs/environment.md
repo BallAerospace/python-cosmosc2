@@ -20,15 +20,15 @@ except KeyError:
     os.environ["COSMOSC2_VERSION"] = "1.2.3"
 ```
 
-In v1 the libary can log much more of what is happening in the libary. If you wish to enable this you can set the environment variable `COSMOS_DEBUG` to equal "DEBUG". If this is not set you will not get log messages if this is an incorrect log level you will get a ValueError.
+In v1 the libary can log much more of what is happening in the libary. If you wish to enable this you can set the environment variable `COSMOS_LOG_LEVEL` to equal "DEBUG". If this is not set you will not get log messages if this is an incorrect log level you will get a ValueError.
 
 ```python
 import os
 
 try:
-    os.environ["COSMOS_DEBUG"]
+    os.environ["COSMOS_LOG_LEVEL"]
 except KeyError:
-    os.environ["COSMOS_DEBUG"] = "DEBUG"
+    os.environ["COSMOS_LOG_LEVEL"] = "DEBUG"
 ```
 
 ### COSMOS_SCHEMA

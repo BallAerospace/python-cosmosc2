@@ -14,9 +14,8 @@ commands.py
 # attribution addendums as found in the LICENSE.txt
 
 import logging
-from cosmosc2 import link
+import cosmosc2
 from cosmosc2.extract import convert_to_value
-from cosmosc2.exceptions import CosmosHazardousError
 
 
 # This is in System.commands in Ruby
@@ -64,26 +63,26 @@ def _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous):
 
 
 def prompt_for_hazardous(target_name, cmd_name, hazardous_description):
-    message = "Warning: Command {:s} {:s} is Hazardous. ".format(target_name, cmd_name)
+    message = [
+        f"Warning: Command {target_name} {cmd_name} is Hazardous."
+    ]
     if hazardous_description:
-        message += "\n{:s}\n".format(hazardous_description)
-    message += "Send? (y,n): "
-    answer = input(message)
+        message.append(hazardous_description)
+    message.append("Send? (y/N): ")
+    answer = input('\n'.join(message))
     if answer.lower() == "y":
         return True
-    else:
-        return False
+    return False
 
 
 def prompt_for_script_abort():
     answer = input("Stop running script? (y,n): ")
     if answer.lower() == "y":
         exit()
-    else:
-        return False  # Not aborted - Retry
+    return False  # Not aborted - Retry
 
 
-def _cmd(cmd, cmd_no_hazardous, *args, **kwargs):
+def _cmd(cmd, *args):
     """
     Send the command and log the results
     NOTE: This is a helper method and should not be called directly
@@ -92,27 +91,10 @@ def _cmd(cmd, cmd_no_hazardous, *args, **kwargs):
     no_range = "no_range" in cmd or "no_checks" in cmd
     no_hazardous = "no_hazardous" in cmd or "no_checks" in cmd
 
-    while True:
-        try:
-            data = link.json_rpc_request(cmd, *args)
-            if "error" not in data:
-                target_name, cmd_name, cmd_params = data
-                _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous)
-        except CosmosHazardousError as e:
-            ok_to_proceed = prompt_for_hazardous(
-                e.target_name, e.cmd_name, e.hazardous_description
-            )
-            if ok_to_proceed:
-                (
-                    target_name,
-                    cmd_name,
-                    cmd_params,
-                ) = link.json_rpc_request(cmd_no_hazardous, *args)
-                _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous)
-            else:
-                if not prompt_for_script_abort():
-                    continue
-        break
+    data = cosmosc2.LINK.json_rpc_request(cmd, *args)
+    if "error" not in data:
+        target_name, cmd_name, cmd_params = data
+        _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous)
 
 
 def cmd(*args):
@@ -122,7 +104,7 @@ def cmd(*args):
     or
       cmd('target_name cmd_name with cmd_param1 value1, cmd_param2 value2')
     """
-    return _cmd("cmd", "cmd_no_hazardous_check", *args)
+    return _cmd("cmd", *args)
 
 
 def cmd_no_range_check(*args):
@@ -132,7 +114,7 @@ def cmd_no_range_check(*args):
     or
       cmd_no_range_check('target_name cmd_name with cmd_param1 value1, cmd_param2 value2')
     """
-    return _cmd("cmd_no_range_check", "cmd_no_checks", *args)
+    return _cmd("cmd_no_range_check", *args)
 
 
 def cmd_no_hazardous_check(*args):
@@ -142,7 +124,7 @@ def cmd_no_hazardous_check(*args):
     or
       cmd_no_hazardous_check('target_name cmd_name with cmd_param1 value1, cmd_param2 value2')
     """
-    return _cmd("cmd_no_hazardous_check", None, *args)
+    return _cmd("cmd_no_hazardous_check", *args)
 
 
 def cmd_no_checks(*args):
@@ -152,7 +134,7 @@ def cmd_no_checks(*args):
     or
       cmd_no_checks('target_name cmd_name with cmd_param1 value1, cmd_param2 value2')
     """
-    return _cmd("cmd_no_checks", None, *args)
+    return _cmd("cmd_no_checks", *args)
 
 
 def cmd_raw(*args):
@@ -162,7 +144,7 @@ def cmd_raw(*args):
     or
       cmd_raw('target_name cmd_name with cmd_param1 value1, cmd_param2 value2')
     """
-    return _cmd("cmd_raw", "cmd_raw_no_hazardous_check", *args)
+    return _cmd("cmd_raw", *args)
 
 
 def cmd_raw_no_range_check(*args):
@@ -172,7 +154,7 @@ def cmd_raw_no_range_check(*args):
     or
       cmd_raw_no_range_check('target_name cmd_name with cmd_param1 value1, cmd_param2 value2')
     """
-    return _cmd("cmd_raw_no_range_check", "cmd_raw_no_checks", *args)
+    return _cmd("cmd_raw_no_range_check", *args)
 
 
 def cmd_raw_no_hazardous_check(*args):
@@ -197,47 +179,47 @@ def cmd_raw_no_checks(*args):
 
 def send_raw(interface_name, data):
     """Sends raw data through an interface"""
-    return link.json_rpc_request("send_raw", interface_name, data)
+    return cosmosc2.LINK.json_rpc_request("send_raw", interface_name, data)
 
 
 def send_raw_file(interface_name, filename):
     """Sends raw data through an interface from a file"""
     with open(filename, "rb") as file:
         data = file.read()
-    return link.json_rpc_request("send_raw", interface_name, data)
+    return cosmosc2.LINK.json_rpc_request("send_raw", interface_name, data)
 
 
 def get_cmd_list(target_name):
     """Returns all the target commands as an array of arrays listing the command name and description."""
-    return link.json_rpc_request("get_cmd_list", target_name)
+    return cosmosc2.LINK.json_rpc_request("get_cmd_list", target_name)
 
 
 def get_cmd_param_list(target_name, cmd_name):
     """Returns all the parameters for given command as an array of arrays
     containing the parameter name, default value, states, description, units
     full name, units abbreviation, and whether it is required."""
-    return link.json_rpc_request("get_cmd_param_list", target_name, cmd_name)
+    return cosmosc2.LINK.json_rpc_request("get_cmd_param_list", target_name, cmd_name)
 
 
 def get_cmd_hazardous(target_name, cmd_name, cmd_params=None):
     """Returns whether a command is hazardous (true or false)"""
     if cmd_params is None:
         cmd_params = {}
-    return link.json_rpc_request("get_cmd_hazardous", target_name, cmd_name, cmd_params)
+    return cosmosc2.LINK.json_rpc_request("get_cmd_hazardous", target_name, cmd_name, cmd_params)
 
 
 def get_cmd_value(target_name, command_name, parameter_name, value_type="CONVERTED"):
     """Returns a value from the specified command"""
-    return link.json_rpc_request(
+    return cosmosc2.LINK.json_rpc_request(
         "get_cmd_value", target_name, command_name, parameter_name, value_type
     )
 
 
 def get_cmd_time(target_name=None, command_name=None):
     """Returns the time the most recent command was sent"""
-    return link.json_rpc_request("get_cmd_time", target_name, command_name)
+    return cosmosc2.LINK.json_rpc_request("get_cmd_time", target_name, command_name)
 
 
 def get_cmd_buffer(target_name, command_name):
     """Returns the buffer from the most recent specified command"""
-    return link.json_rpc_request("get_cmd_buffer", target_name, command_name)
+    return cosmosc2.LINK.json_rpc_request("get_cmd_buffer", target_name, command_name)

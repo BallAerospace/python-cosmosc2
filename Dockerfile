@@ -18,7 +18,7 @@ ENV REQUESTS_CA_BUNDLE=/devel/cacert.pem
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /devel/
+WORKDIR /app/
 
 RUN apk add --no-cache --virtual .build-dependencies \
         gcc musl-dev python3-dev \
@@ -29,7 +29,10 @@ RUN apk add --no-cache --virtual .build-dependencies \
     && git config --global http.sslVerify false \
     && /sbin/apk del --no-cache .build-dependencies
 
-COPY ./ ./cosmosc2/
+COPY ./ ./
 
-# RUN python /devel/cosmosc2/setup.py develop
-# RUN python /devel/cosmosc2/setup.py install
+RUN [ "python", "/app/setup.py", "develop" ]
+# RUN ["python", "/app/setup.py", "install"]
+
+# CMD [ "tail", "-f", "/dev/null" ]
+CMD [ "coverage", "run", "-m", "pytest", "./tests/" ]

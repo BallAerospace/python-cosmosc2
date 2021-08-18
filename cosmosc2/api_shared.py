@@ -51,7 +51,7 @@ def _check(method, *args):
         )
 
 
-def check(*args, **kwargs):
+def check(*args):
     """Check the converted value of a telmetry item against a condition
     Always print the value of the telemetry item to STDOUT
     If the condition check fails, raise an error
@@ -63,7 +63,7 @@ def check(*args, **kwargs):
     return _check(telemetry.tlm, *args)
 
 
-def check_formatted(*args, **jkwargs):
+def check_formatted(*args):
     """Check the formatted value of a telmetry item against a condition
     Always print the value of the telemetry item to STDOUT
     If the condition check fails, raise an error

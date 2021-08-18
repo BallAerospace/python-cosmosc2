@@ -115,7 +115,7 @@ class Connection(ContextDecorator):
             https://docs.python-requests.org/en/master/user/quickstart/#binary-response-content
         """
         request_kwargs = {
-            "url": "{}/cosmos-api".format(self.url),
+            "url": "{}/cosmos-api/api".format(self.url),
             "data": json.dumps(hash_),
             "headers": {
                 "Content-Type": "application/json-rpc",

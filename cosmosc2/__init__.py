@@ -17,29 +17,30 @@ import os
 from cosmosc2.connection import Connection
 
 
-link = None
+LINK = None
 
 
 def update_scope(scope: str):
-    global link
-    link.scope = str(scope)
+    global LINK
+    LINK.scope = str(scope)
     os.environ["COSMOS_SCOPE"] = str(scope)
 
 
-def initialize_module(hostname=None, port=None):
-    global link
+def initialize_module(hostname: str = None, port: int = None):
+    global LINK
 
-    if link:
-        link.disconnect()
+    if LINK:
+        LINK.disconnect()
 
     if hostname and port:
-        link = Connection(hostname, port)
+        LINK = Connection(hostname, port)
     else:
-        link = Connection()
+        LINK = Connection()
 
 
 def shutdown():
-    link.shutdown()
+    global LINK
+    LINK.shutdown()
 
 
 initialize_module()
