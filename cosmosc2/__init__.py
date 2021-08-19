@@ -14,8 +14,14 @@ __init__.py
 # attribution addendums as found in the LICENSE.txt
 
 import os
+import logging
+from cosmosc2.environment import LOG_LEVEL
 from cosmosc2.connection import Connection
 
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+    level=logging.getLevelName(LOG_LEVEL),
+)
 
 LINK = None
 
@@ -30,7 +36,7 @@ def initialize_module(hostname: str = None, port: int = None):
     global LINK
 
     if LINK:
-        LINK.disconnect()
+        LINK.shutdown()
 
     if hostname and port:
         LINK = Connection(hostname, port)

@@ -25,7 +25,7 @@ class JsonRpcRequest(JsonRpc):
 
     DANGEROUS_METHODS = ["__send__", "send", "instance_eval", "instance_exec"]
 
-    def __init__(self, id_: int, method_name: str, scope: str, *args):
+    def __init__(self, id_: int, method_name: str, scope: str, *args, **kwargs):
         """Constructor
 
         Arguments:
@@ -33,11 +33,12 @@ class JsonRpcRequest(JsonRpc):
         method_name -- The name of the method to call
         scope -- The scope
         args -- Array of strings which represent the parameters to send to the method
+        kwargs -- Dict of Key, Value parameters to send to the method
         """
         super().__init__()
         self["method"] = str(method_name)
         self["params"] = args
-        self["keyword_params"] = {"scope": scope}
+        self["keyword_params"] = {**{"scope": scope}, **kwargs}
         self["id"] = int(id_)
 
     @property
@@ -81,7 +82,7 @@ class JsonRpcRequest(JsonRpc):
                 raise ValueError("message jsonrpc version: {}".format(hash_["jsonrpc"]))
             return cls.from_hash(hash_)
         except (ValueError, KeyError) as e:
-            raise CosmosRequestError(msg) from e
+            raise CosmosRequestError(msg, request_data) from e
         except Exception as e:
             raise RuntimeError(msg) from e
 
@@ -103,16 +104,15 @@ class JsonRpcRequest(JsonRpc):
 def _convert_bytearray_to_string_raw(object_):
     if isinstance(object_, (bytes, bytearray)):
         return object_.decode("latin-1")
-    elif isinstance(object_, dict):
+    if isinstance(object_, dict):
         for key, value in object_.items():
             object_[key] = _convert_bytearray_to_string_raw(value)
         return object_
-    elif isinstance(object_, (tuple, list)):
+    if isinstance(object_, (tuple, list)):
         object_ = list(object_)
         index = 0
         for value in object_:
             object_[index] = _convert_bytearray_to_string_raw(value)
             index += 1
         return object_
-    else:
-        return object_
+    return object_

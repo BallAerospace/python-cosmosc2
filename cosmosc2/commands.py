@@ -14,8 +14,14 @@ commands.py
 # attribution addendums as found in the LICENSE.txt
 
 import logging
+import sys
+
 import cosmosc2
+from cosmosc2.__version__ import __title__
+from cosmosc2.exceptions import CosmosResponseError
 from cosmosc2.extract import convert_to_value
+
+LOGGER = logging.getLogger(__title__)
 
 
 # This is in System.commands in Ruby
@@ -42,59 +48,59 @@ def build_cmd_output_string(target_name, cmd_name, cmd_params, raw=False):
     return output_string
 
 
-def _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous):
-    """Log any warnings about disabling checks and log the command itself
-    NOTE: This is a helper method and should not be called directly"""
-    logger = logging.getLogger("cosmosc2")
-    if no_range:
-        logger.warning(
-            "Command {:s} {:s} being sent ignoring range checks".format(
-                target_name, cmd_name
-            )
-        )
-    if no_hazardous:
-        logger.warning(
-            "Command {:s} {:s} being sent ignoring hazardous warnings".format(
-                target_name, cmd_name
-            )
-        )
-    logger.info(build_cmd_output_string(target_name, cmd_name, cmd_params, raw))
-    return None
-
-
 def prompt_for_hazardous(target_name, cmd_name, hazardous_description):
-    message = [
-        f"Warning: Command {target_name} {cmd_name} is Hazardous."
+    """ """
+    message_list = [
+        "Warning: Command {:s} {:s} is Hazardous. ".format(target_name, cmd_name)
     ]
     if hazardous_description:
-        message.append(hazardous_description)
-    message.append("Send? (y/N): ")
-    answer = input('\n'.join(message))
-    if answer.lower() == "y":
-        return True
-    return False
+        message_list.append(" >> {:s}".format(hazardous_description))
+    message_list.append("Send? (y/N): ")
+    answer = input("\n".join(message_list))
+    try:
+        return answer.lower()[0] == "y"
+    except IndexError:
+        return False
 
 
 def prompt_for_script_abort():
-    answer = input("Stop running script? (y,n): ")
-    if answer.lower() == "y":
-        exit()
-    return False  # Not aborted - Retry
+    """ """
+    answer = input("Stop running script? (y/N): ")
+    try:
+        if answer.lower()[0] == "y":
+            sys.exit(66) # execute order 66
+    except IndexError:
+        return False
 
 
-def _cmd(cmd, *args):
-    """
-    Send the command and log the results
-    NOTE: This is a helper method and should not be called directly
-    """
-    raw = "raw" in cmd
-    no_range = "no_range" in cmd or "no_checks" in cmd
-    no_hazardous = "no_hazardous" in cmd or "no_checks" in cmd
+def _log_cmd(cmd_, target_name, cmd_name, cmd_params):
+    """Log any warnings about disabling checks and log the command itself
+    NOTE: This is a helper method and should not be called directly"""
+    cmd_str = build_cmd_output_string(target_name, cmd_name, cmd_params, "raw" in cmd_)
+    if "no_range" in cmd_ or "no_checks" in cmd_:
+        LOGGER.warning(f"{cmd_str} being sent ignoring range checks")
+    if "no_hazardous" in cmd_ or "no_checks" in cmd_:
+        LOGGER.warning(f"{cmd_str} being sent ignoring hazardous warnings")
 
-    data = cosmosc2.LINK.json_rpc_request(cmd, *args)
-    if "error" not in data:
-        target_name, cmd_name, cmd_params = data
-        _log_cmd(target_name, cmd_name, cmd_params, raw, no_range, no_hazardous)
+
+def _cmd(cmd_, cmd_no_hazardous, *args):
+    """Send the command and log the results
+    NOTE: This is a helper method and should not be called directly"""
+    try:
+        target_name, cmd_name, cmd_params = cosmosc2.LINK.json_rpc_request(cmd_, *args)
+        _log_cmd(cmd_, target_name, cmd_name, cmd_params)
+    except CosmosResponseError as error:
+        resp_error = error.response.error().data()["instance_variables"]
+        ok_to_proceed = prompt_for_hazardous(
+            resp_error["@target_name"],
+            resp_error["@cmd_name"],
+            resp_error["@hazardous_description"]
+        )
+        if ok_to_proceed:
+            target_name, cmd_name, cmd_params = cosmosc2.LINK.json_rpc_request(cmd_no_hazardous, *args)
+            _log_cmd(cmd_no_hazardous, target_name, cmd_name, cmd_params)
+        else:
+            prompt_for_script_abort()
 
 
 def cmd(*args):
@@ -205,7 +211,9 @@ def get_cmd_hazardous(target_name, cmd_name, cmd_params=None):
     """Returns whether a command is hazardous (true or false)"""
     if cmd_params is None:
         cmd_params = {}
-    return cosmosc2.LINK.json_rpc_request("get_cmd_hazardous", target_name, cmd_name, cmd_params)
+    return cosmosc2.LINK.json_rpc_request(
+        "get_cmd_hazardous", target_name, cmd_name, cmd_params
+    )
 
 
 def get_cmd_value(target_name, command_name, parameter_name, value_type="CONVERTED"):

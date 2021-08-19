@@ -13,38 +13,46 @@ exceptions.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
+from cosmosc2.json_rpc import *
+
 
 class CosmosError(RuntimeError):
-    pass
+    """
+    """
 
 
 class CosmosConnectionError(CosmosError):
-    pass
+    """
+    TODO
+    """
 
 
 class CosmosRetryError(CosmosError):
-    pass
+    """
+    TODO
+    """
+
+
+class CosmosCheckError(CosmosError):
+    """
+    TODO
+    """
 
 
 class CosmosRequestError(CosmosError):
-    pass
+    """
+    TODO
+    """
+    def __init__(self, message: str, request: JsonRpcRequest):
+        super().__init__(message, request)
+        self.request = request
 
 
 class CosmosResponseError(CosmosError):
-    pass
-
-
-class CosmosCheckError(RuntimeError):
-    pass
-
-
-class CosmosStopScript(RuntimeError):
-    pass
-
-
-class CosmosSkipTestCase(RuntimeError):
-    pass
-
-
-class CosmosHazardousError(RuntimeError):
-    pass
+    """
+    TODO
+    """
+    def __init__(self, request: JsonRpcRequest, response: JsonRpcErrorResponse):
+        super().__init__(request, response)
+        self.request = request
+        self.response = response

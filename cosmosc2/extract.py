@@ -41,46 +41,41 @@ HEX_CHECK_REGEX = re.compile(r"\A\s*0[xX][\dabcdefABCDEF]+\s*\Z")
 ARRAY_CHECK_REGEX = re.compile(r"\A\s*\[.*\]\s*\Z")
 
 
-def remove_quotes(string):
+def remove_quotes(string: str):
     """Returns the string with leading and trailing quotes removed"""
     if (string.startswith('"') and string.endswith('"')) or (
         string.startswith("'") and string.endswith("'")
     ):
         return string[1:-1]
-    else:
-        return string
+    return string
 
 
 def is_float(string):
     """Returns whether the String represents a floating point number"""
     if FLOAT_CHECK_REGEX.match(string) or SCIENTIFIC_CHECK_REGEX.match(string):
         return True
-    else:
-        return False
+    return False
 
 
 def is_int(string):
     """Returns whether the String represents an integer"""
     if INT_CHECK_REGEX.match(string):
         return True
-    else:
-        return False
+    return False
 
 
 def is_hex(string):
     """Whether the String represents a hexadecimal number"""
     if HEX_CHECK_REGEX.match(string):
         return True
-    else:
-        return False
+    return False
 
 
 def is_array(string):
     """Whether the String represents an Array"""
     if ARRAY_CHECK_REGEX.match(string):
         return True
-    else:
-        return False
+    return False
 
 
 def convert_to_value(string):

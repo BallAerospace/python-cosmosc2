@@ -20,24 +20,12 @@ from threading import RLock, Event
 from contextlib import ContextDecorator
 
 from cosmosc2.__version__ import __title__
-from cosmosc2.environment import (
-    COSMOS_SCOPE,
-    COSMOS_TOKEN,
-    COSMOS_SCHEMA,
-    COSMOS_HOSTNAME,
-    COSMOS_PORT,
-    LOG_LEVEL,
-    USER_AGENT,
-)
+from cosmosc2.environment import *
 from cosmosc2.exceptions import CosmosConnectionError
 from cosmosc2.decorators import request_wrapper, retry_wrapper
 from cosmosc2.json_rpc import JsonRpcRequest, JsonRpcResponse
 
-logger = logging.getLogger(__title__)
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(name)s %(message)s",
-    level=logging.getLevelName(LOG_LEVEL),
-)
+LOGGER = logging.getLogger(__title__)
 
 
 class Connection(ContextDecorator):
@@ -81,27 +69,29 @@ class Connection(ContextDecorator):
         self._shutdown_needed.set()
         self._session.close()
 
-    def json_rpc_request(self, method_name, *args):
+    def json_rpc_request(self, method_name, *args, **kwargs):
         """Forwards all method calls to the remote service.
 
         method_name -- Name of the method to call
         args -- Array of parameters to pass to the method
+        kwargs -- Dict of parameters to pass to the method
         return -- The result of the method call. If something goes wrong with the
           protocol a exception extended from RuntimeError is raised.
         """
+        if self._shutdown_needed.is_set():
+            raise CosmosConnectionError("shutdown event is set, exiting")
         with self._mutex:
-            if self._shutdown_needed.is_set():
-                raise CosmosConnectionError("shutdown event is set, exiting")
             self.id += 1
-            json_rpc_request = JsonRpcRequest(self.id, method_name, self.scope, *args)
-            response = self._make_json_rpc_request(json_rpc_request.to_hash())
-            # The code below will always either raise or return breaking out of the loop
-            response = JsonRpcResponse.from_bytes(response)
-            logger.debug("response %s %s", type(response), response)
+            json_rpc_request = JsonRpcRequest(
+                self.id, method_name, self.scope, *args, **kwargs
+            )
+            resp = self._make_json_rpc_request(json_rpc_request.to_hash())
             try:
-                return response.result
+                json_rpc_response = JsonRpcResponse.from_bytes(resp.content)
+                LOGGER.debug("response %s %s", type(json_rpc_response), json_rpc_response)
+                return json_rpc_response.result
             except AttributeError:
-                return response
+                return json_rpc_response
 
     @request_wrapper
     @retry_wrapper
@@ -121,13 +111,12 @@ class Connection(ContextDecorator):
                 "Content-Type": "application/json-rpc",
             },
         }
-        logger.debug("calling with %s", request_kwargs)
+        LOGGER.debug("calling with %s", request_kwargs)
         resp = self._session.post(**request_kwargs)
-        logger.debug(
-            "resp received: %s resp.time: %f %s",
+        LOGGER.debug(
+            "resp: %s total_seconds: %f content: %s",
             resp,
             resp.elapsed.total_seconds(),
             resp.content,
         )
-        resp.raise_for_status()
-        return resp.content
+        return resp

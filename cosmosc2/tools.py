@@ -21,7 +21,9 @@ import cosmosc2
 
 # Get the organized list of available telemetry screens
 def get_screen_list(config_filename=None, force_refresh=False):
-    return cosmosc2.LINK.json_rpc_request("get_screen_list", config_filename, force_refresh)
+    return cosmosc2.LINK.json_rpc_request(
+        "get_screen_list", config_filename, force_refresh
+    )
 
 
 # Get a specific screen definition

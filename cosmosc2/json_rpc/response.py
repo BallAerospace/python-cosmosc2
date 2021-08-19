@@ -16,7 +16,7 @@ json_rpc/response.py
 import json
 
 from cosmosc2.environment import JSON_RPC_VERSION
-from cosmosc2.exceptions import CosmosResponseError
+from cosmosc2.exceptions import CosmosError
 from cosmosc2.json_rpc.base import JsonRpc
 from cosmosc2.json_rpc.error import JsonRpcError
 
@@ -49,14 +49,11 @@ class JsonRpcResponse(JsonRpc):
         try:
             hash_ = json.loads(response_data.decode("latin-1"))
         except Exception as e:
-            raise RuntimeError(msg, response_data) from e
+            raise CosmosError(msg, response_data) from e
 
-        try:
             # Verify the jsonrpc version is correct and there is an ID
-            if hash_["jsonrpc"] != JSON_RPC_VERSION:
-                raise CosmosResponseError(msg)
-        except KeyError as e:
-            raise CosmosResponseError(msg, response_data) from e
+        if hash_.get("jsonrpc") != JSON_RPC_VERSION:
+            raise CosmosError(msg, response_data)
 
         try:
             return JsonRpcErrorResponse.from_hash(hash_)
@@ -68,7 +65,7 @@ class JsonRpcResponse(JsonRpc):
         except KeyError:
             pass
 
-        raise CosmosResponseError(msg, response_data)
+        raise CosmosError(msg, response_data)
 
 
 def convert_json_class(object_):
@@ -83,10 +80,8 @@ def convert_json_class(object_):
                     return -float("inf")
                 elif raw == "NaN":
                     return float("nan")
-                else:
-                    return raw
-            else:
-                return bytearray(raw)
+                return raw
+            return bytearray(raw)
         except Exception:
             for key, value in object_.items():
                 object_[key] = convert_json_class(value)

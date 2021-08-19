@@ -17,6 +17,7 @@ import cosmosc2
 
 
 def tlm(*args):
+
     """Poll for the converted value of a telemetry item
     Usage:
       tlm(target_name, packet_name, item_name)
@@ -27,6 +28,7 @@ def tlm(*args):
 
 
 def tlm_raw(*args):
+
     """Poll for the raw value of a telemetry item
     Usage:
       tlm_raw(target_name, packet_name, item_name)
@@ -37,6 +39,7 @@ def tlm_raw(*args):
 
 
 def tlm_formatted(*args):
+
     """Poll for the formatted value of a telemetry item
     Usage:
       tlm_formatted(target_name, packet_name, item_name)
@@ -47,6 +50,7 @@ def tlm_formatted(*args):
 
 
 def tlm_with_units(*args):
+
     """Poll for the formatted with units value of a telemetry item
     Usage:
       tlm_with_units(target_name, packet_name, item_name)
@@ -57,10 +61,12 @@ def tlm_with_units(*args):
 
 
 def tlm_variable(*args):
+
     return cosmosc2.LINK.json_rpc_request("tlm_variable", *args)
 
 
 def set_tlm(*args):
+
     """Set a telemetry point to a given value. Note this will be over written in
     a live system by incoming new telemetry.
     Usage:
@@ -72,6 +78,7 @@ def set_tlm(*args):
 
 
 def set_tlm_raw(*args):
+
     """Set the raw value of a telemetry point to a given value. Note this will
     be over written in a live system by incoming new telemetry.
     Usage:
@@ -134,18 +141,27 @@ def normalize_tlm(*args):
     return cosmosc2.LINK.json_rpc_request("normalize_tlm", *args)
 
 
-def get_tlm_packet(target_name, packet_name, value_types="CONVERTED"):
+def get_telemetry(target_name, packet_name):
+    """
+    The get_telemetry function returns a packet hash.
+    Usage:
+      packet_hash = get_telemetry(target_name, packet_name)
+    """
+    return cosmosc2.LINK.json_rpc_request("get_telemetry", target_name, packet_name)
+
+
+def get_tlm_packet(target_name, packet_name, value_type="CONVERTED"):
     """Gets all the values from the given packet returned in a two dimensional
     array containing the item_name, value, and limits state.
     Usage:
       values = get_tlm_packet(target_name, packet_name, <:RAW, :CONVERTED, :FORMATTED, :WITH_UNITS>)
     """
     return cosmosc2.LINK.json_rpc_request(
-        "get_tlm_packet", target_name, packet_name, value_types
+        "get_tlm_packet", target_name, packet_name, type=value_type
     )
 
 
-def get_tlm_values(items, value_types="CONVERTED"):
+def get_tlm_values(items, value_type="CONVERTED"):
     """Gets all the values from the given packet returned in an
     array consisting of an Array of item values, an array of item limits state
     given as symbols such as :RED, :YELLOW, :STALE, an array of arrays including
@@ -154,20 +170,14 @@ def get_tlm_values(items, value_types="CONVERTED"):
     Usage:
       values = get_tlm_values([[target_name, packet_name, item_name], ...], <:RAW, :CONVERTED, :FORMATTED, :WITH_UNITS>)
     """
-    return cosmosc2.LINK.json_rpc_request("get_tlm_values", items, value_types)
+    return cosmosc2.LINK.json_rpc_request("get_tlm_values", items)
 
 
-def get_tlm_list(target_name):
-    """Gets the packets for a given target name. Returns an array of arrays
-    consisting of packet names and packet descriptions.
+def get_target(target_name):
     """
-    return cosmosc2.LINK.json_rpc_request("get_tlm_list", target_name)
-
-
-def get_tlm_item_list(target_name, packet_name):
-    """Gets all the telemetry mnemonics for a given target and packet. Returns an
-    array of arrays consisting of item names, item states, and item descriptions"""
-    return cosmosc2.LINK.json_rpc_request("get_tlm_item_list", target_name, packet_name)
+    The get_target method returns a target hash containing all the information about the target.
+    """
+    return cosmosc2.LINK.json_rpc_request("get_target", target_name)
 
 
 def get_target_list():
@@ -175,33 +185,16 @@ def get_target_list():
     return cosmosc2.LINK.json_rpc_request("get_target_list")
 
 
-def get_tlm_details(items):
-    return cosmosc2.LINK.json_rpc_request("get_tlm_details", items)
-
-
 def get_tlm_buffer(target_name, packet_name):
-    """Returns the buffer from the telemetry packet."""
+    """The get_tlm_buffer method returns the raw packet buffer as a Ruby string.
+    Syntax:
+      buffer = get_tlm_buffer("<Target Name>", "<Packet Name>")
+    """
     return cosmosc2.LINK.json_rpc_request("get_tlm_buffer", target_name, packet_name)
 
-
-def subscribe_packet_data(packets, queue_size=1000):
-    """Subscribe to one or more telemetry packets. The queue ID is returned for
-    use in get_packet_data and unsubscribe_packet_data.
-    Usage:
-      id = subscribe_packet_data([[target_name,packet_name], ...], <queue_size>)
+def subscribe_packets(packets: list):
+    """The subscribe_packets method allows the user to listen for one or more telemetry packets of data to arrive. A unique id is returned which is used to retrieve the data.
+    Syntax:
+        id = subscribe_packets([['INST', 'HEALTH_STATUS'], ['INST', 'ADCS']])
     """
-    return cosmosc2.LINK.json_rpc_request("subscribe_packet_data", packets, queue_size)
-
-
-def unsubscribe_packet_data(id_):
-    """Unsubscribe to telemetry packets. Pass the queue ID which was returned by
-    the subscribe_packet_data method.
-    Usage:
-      unsubscribe_packet_data(id)
-    """
-    return cosmosc2.LINK.json_rpc_request("unsubscribe_packet_data", id_)
-
-
-def get_packet_data(id_, non_block=False):
-    """DEPRECATED - Currently the only option on python until we have config file parsing though"""
-    return cosmosc2.LINK.json_rpc_request("get_packet_data", id_, non_block)
+    return cosmosc2.LINK.json_rpc_request("subscribe_packets", packets)

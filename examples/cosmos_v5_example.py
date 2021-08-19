@@ -13,27 +13,24 @@ os.environ["COSMOS_PORT"] = "2900"
 from cosmosc2 import *
 
 # ~ # telemetry.py
-tlm("INST HEALTH_STATUS TEMP1")
-tlm_raw("INST HEALTH_STATUS TEMP1")
-tlm_formatted("INST HEALTH_STATUS TEMP1")
-tlm_with_units("INST HEALTH_STATUS TEMP1")
-tlm_variable("INST HEALTH_STATUS TEMP1", "RAW")
-set_tlm("INST HEALTH_STATUS TEMP1 = 5")
-get_tlm_packet("INST", "HEALTH_STATUS")
-get_tlm_values(
-    [["INST", "HEALTH_STATUS", "TEMP1"], ["INST", "HEALTH_STATUS", "TEMP2"]]
-)
-get_tlm_list("INST")
-get_tlm_item_list("INST", "HEALTH_STATUS")
-get_target_list()
-get_tlm_details(
-    [["INST", "HEALTH_STATUS", "TEMP1"], ["INST", "HEALTH_STATUS", "TEMP2"]]
-)
-get_tlm_buffer("INST", "HEALTH_STATUS")
+print(tlm("INST HEALTH_STATUS TEMP1"))
+print(tlm_raw("INST HEALTH_STATUS TEMP1"))
+print(tlm_formatted("INST HEALTH_STATUS TEMP1"))
+print(tlm_with_units("INST HEALTH_STATUS TEMP1"))
+print(tlm_variable("INST HEALTH_STATUS TEMP1", "RAW"))
+print(set_tlm("INST HEALTH_STATUS TEMP1 = 5"))
+print(get_tlm_packet("INST", "HEALTH_STATUS"))
+print(get_tlm_values(
+    ["INST__HEALTH_STATUS__TEMP1__CONVERTED", "INST__HEALTH_STATUS__TEMP2__CONVERTED"]
+))
+print(get_target_list())
+print(get_target("INST"))
+print(get_tlm_buffer("INST", "HEALTH_STATUS"))
 
-id_ = subscribe_packet_data([["INST", "HEALTH_STATUS"]])
-get_packet_data(id_)
-unsubscribe_packet_data(id_)
+id_ = subscribe_packets([["INST", "HEALTH_STATUS"]])
+print(id_)
+
+sys.exit(1)
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 # commands.py
