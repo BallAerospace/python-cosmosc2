@@ -22,7 +22,9 @@ _cosmos_version = "COSMOS_VERSION"
 
 _cosmos_user = "COSMOS_USER"
 
-_cosmos_client = "COSMOS_CLIENT"
+_cosmos_client_id = "COSMOS_CLIENT_ID"
+
+_cosmos_secret = "COSMOS_SECRET"
 
 _cosmos_token = "COSMOS_TOKEN"
 
@@ -59,11 +61,13 @@ COSMOS_SCOPE = os.environ.get(_default_scope, "DEFAULT")
 
 COSMOS_USER = os.environ.get(_cosmos_user)
 
-COSMOS_CLIENT = os.environ.get(_cosmos_client)
+COSMOS_CLIENT_ID = os.environ.get(_cosmos_client_id)
+
+COSMOS_SECRET = os.environ.get(_cosmos_secret)
 
 COSMOS_TOKEN = os.environ.get(_cosmos_token, "SuperSecret")
 
-COSMOS_VERSION = os.environ.get(_cosmos_version, "N/A")
+COSMOS_VERSION = os.environ.get(_cosmos_version)
 
 JSON_RPC_VERSION = os.environ.get(_json_rpc_version, "2.0")
 
@@ -75,9 +79,11 @@ except TypeError:
     MAX_RETRY_COUNT = 3
 
 _default_user_agent = [
-    f"{__title__}:{__version__}:{JSON_RPC_VERSION}",
-    f"{COSMOS_USER}:{COSMOS_VERSION}"
+    f"{__title__}:{__version__}:{JSON_RPC_VERSION}:({COSMOS_VERSION})",
 ]
+
+if COSMOS_USER is not None:
+    _default_user_agent[0] += f":({COSMOS_USER})"
 
 if os.name == "nt":
     _default_user_agent.append(

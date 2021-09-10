@@ -4,81 +4,173 @@
 >
 > This program is free software; you can modify and/or redistribute it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; version 3 with attribution addendums as found in the LICENSE.txt
 
-## Environment Variables
+# Environment Variables
 
-### COSMOS_VERSION
+## COSMOS_USER_AGENT
+---
 
+> BASE, ENTERPRISE
 
-If you are using cosmos v5 you MAY want to set the environment variable `COSMOSC2_VERSION` to equal anything. This will be used in the User-Agent header of the request. Tt will default to use the libary version. You can use this to track requests from an external application to cosmos.
+If you are using cosmos v5 you MAY want to set the environment variable `COSMOS_USER_AGENT` to equal anything. This will overwrite the default User-Agent header of the request. You can use this to track requests from an external application to cosmos.
 
-```python
-import os
+Example:
 
-try:
-    os.environ["COSMOSC2_VERSION"]
-except KeyError:
-    os.environ["COSMOSC2_VERSION"] = "1.2.3"
 ```
+COSMOS_USER_AGENT='MonkeyCommand:2.0.0 (alpha)'
+```
+
+## COSMOS_VERSION
+---
+
+> BASE, ENTERPRISE
+
+If you are using cosmos v5 you MAY want to set the environment variable `COSMOS_VERSION` to equal anything. This will be used in the User-Agent header of the request. It will default to use None. You can use this to track requests from an external application to cosmos.
+
+Example:
+
+```
+COSMOS_VERSION=MonkeyCommand:1.2.2
+```
+
+## COSMOS_LOG_LEVEL
+---
+
+> BASE, ENTERPRISE
 
 In v1 the libary can log much more of what is happening in the libary. If you wish to enable this you can set the environment variable `COSMOS_LOG_LEVEL` to equal "DEBUG". If this is not set you will not get log messages if this is an incorrect log level you will get a ValueError.
 
-```python
-import os
+Example:
 
-try:
-    os.environ["COSMOS_LOG_LEVEL"]
-except KeyError:
-    os.environ["COSMOS_LOG_LEVEL"] = "DEBUG"
+```
+COSMOS_LOG_LEVEL=DEBUG
 ```
 
-### COSMOS_SCHEMA
+## COSMOS_SCHEMA
+---
 
-In v1 you MAY want to set the hostname for Cosmos. The schema can now be set via an environment variable `COSMOS_SCHEMA` to the network schema that Cosmos is running with. Normal options are `http` or `https`. The default is `http`
+> BASE, ENTERPRISE
 
-```python
-import os
+Set the shema for Cosmos. The schema can now be set via an environment variable `COSMOS_SCHEMA` to the network schema that Cosmos is running with. Normal options are `http` or `https`. The default is `http`
 
-try:
-    os.environ["COSMOS_SCHEMA"]
-except KeyError:
-    os.environ["COSMOS_SCHEMA"] = "http"
+Example:
+
+```
+COSMOS_SCHEMA=http
 ```
 
-### COSMOS_HOSTNAME
+## COSMOS_WS_SCHEMA
+---
 
-In v1 you MAY want to set the hostname for all Cosmos v4 scripts. In v0 of cosmosc2 it would default to 127.0.0.1. The hostname can now be set via an environment variable `COSMOS_HOSTNAME` to network address of the computer running Cosmos.
+> BASE, ENTERPRISE
 
-```python
-import os
+Set the web socket schema for Cosmos. The schema for web sockets can now be set via an environment variable `COSMOS_WS_SCHEMA` to the network schema that Cosmos is running with. Normal options are `ws` or `wss`. The default is `ws`
 
-try:
-    os.environ["COSMOS_HOSTNAME"]
-except KeyError:
-    os.environ["COSMOS_HOSTNAME"] = "127.0.0.1"
+Example:
+
+```
+COSMOS_WS_SCHEMA=ws
 ```
 
-### COSMOS_PORT
+## COSMOS_HOSTNAME
+---
 
-In v1 you MAY want to set the port for all cosmos v5 scripts. The port can be set via an environment variable `COSMOS_PORT` to the network port of the computer running Cosmos. Note the new port for Cosmos v5 is 2900
+> BASE, ENTERPRISE
 
-```python
-import os
+Set the hostname for all Cosmosc2 scripts. In v0 of cosmosc2 it would default to 127.0.0.1. The hostname can now be set via an environment variable `COSMOS_HOSTNAME` to network address of the computer running Cosmos.
 
-try:
-    os.environ["COSMOS_PORT"]
-except KeyError:
-    os.environ["COSMOS_PORT"] = "7777"
+Example:
+
+```
+COSMOS_HOSTNAME=127.0.0.1
 ```
 
-### COSMOS_TOKEN
+COSMOS_PORT
+---
 
-In Cosmos v5 the api is password protected by default, so you need to make sure to set the password before you can use the api. If you need to use a different password you can set the environment variable `COSMOS_TOKEN` to the password on your Cosmos v5 instance. If this is not set the password will default to SuperSecret.
+> BASE, ENTERPRISE
 
-```python
-import os
+Set the port for all cosmosc2 scripts. The port can be set via an environment variable `COSMOS_PORT` to the network port of the computer running Cosmos. Note the default port for Cosmos v5 is 2900
 
-try:
-    os.environ["COSMOS_TOKEN"]
-except KeyError:
-    os.environ["COSMOS_TOKEN"] = ""
+Example:
+
+```
+COSMOS_PORT=7777
+```
+
+## COSMOS_USER
+---
+
+> ENTERPRISE
+
+Set the user for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_USER` to the username in you Cosmos v5 Keycloak. If this is not set the user will default to python None.
+
+Example:
+
+```
+COSMOS_USER=brickTamland
+```
+
+## COSMOS_CLIENT_ID
+---
+
+> ENTERPRISE
+
+Set the client_id for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_CLIENT_ID` to the client_id in you Cosmos v5 Keycloak. If this is not set the client_id will default to python None.
+
+Example:
+
+```
+COSMOS_CLIENT_ID=brick-tamland-client
+```
+
+## COSMOS_SECRET
+---
+
+> ENTERPRISE
+
+Set the client_secret for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_SECRET` to the client_secret in you Cosmos v5 Keycloak. If this is not set the client_secret will default to python None.
+
+Example:
+
+```
+COSMOS_SECRET='keep it secret, keep it safe.'
+```
+
+## COSMOS_SCOPE
+---
+
+> BASE, ENTERPRISE
+
+Set the scope for all cosmosc2 scripts. To set the environment variable `COSMOS_SCOPE` to the client_secret in you Cosmos v5 Keycloak. If this is not set the scope will default to `DEFAULT`.
+
+Example:
+
+```
+COSMOS_SCOPE=sanDeigo
+```
+
+## COSMOS_TOKEN
+---
+
+> BASE, ENTERPRISE
+
+Set the password for all cosmosc2 scripts. To use a password you can set the environment variable `COSMOS_TOKEN` to the password on your Cosmos v5 instance or user. If this is not set the password will default to `SuperSecret`.
+
+Example:
+
+```
+COSMOS_TOKEN=iLoveLamp
+```
+
+## COSMOS_MAX_RETRY_COUNT
+---
+
+> BASE, ENTERPRISE
+
+Set the max_retry_count for all cosmosc2 scripts. To use max_retry_count you can set the environment variable `COSMOS_MAX_RETRY_COUNT` to the number of times you want cosmosc2 to retry if a command gets a retryable error. If this is not set the max_retry_count will default to `3`.
+
+Example:
+
+```
+COSMOS_TOKEN=iLoveLamp
 ```

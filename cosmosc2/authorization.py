@@ -28,7 +28,7 @@ def generate_auth():
     """
     Pick Auth class base on environment variables
     """
-    if COSMOS_USER is None or COSMOS_CLIENT is None:
+    if COSMOS_USER is None or COSMOS_CLIENT_ID is None:
         return CosmosAuthorization()
     return CosmosKeycloakAuthorization()
 
@@ -124,8 +124,8 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
             https://docs.python-requests.org/en/master/user/quickstart/#json-response-content
         """
         request_kwargs = {
-            "url": f"{self.request_url}/auth/realms/cosmos/protocol/openid-connect/auth",
-            "data": f"client_id={COSMOS_USER}&grant_type=password&password={COSMOS_TOKEN}",
+            "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",
+            "data": f"username={COSMOS_USER}&password={COSMOS_TOKEN}&client_id={COSMOS_CLIENT_ID}&client_secret={COSMOS_SECRET}&grant_type=password&scope=openid",
             "headers": {
                 "User-Agent": USER_AGENT,
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -174,8 +174,8 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
             https://docs.python-requests.org/en/master/user/quickstart/#json-response-content
         """
         request_kwargs = {
-            "url": f"{self.request_url}/auth/realms/cosmos/protocol/openid-connect/token",
-            "data": f"client_id={COSMOS_USER}&grant_type=refresh_token&refresh_token={COSMOS_USER}",
+            "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",
+            "data": f"client_id={COSMOS_USER}&grant_type=refresh_token&refresh_token={self.refresh_token}",
             "headers": {
                 "User-Agent": USER_AGENT,
                 "Content-Type": "application/x-www-form-urlencoded",

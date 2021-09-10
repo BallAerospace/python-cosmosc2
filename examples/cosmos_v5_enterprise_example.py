@@ -3,12 +3,14 @@ import sys
 
 # See cosmosc2/docs/environment.md for environment documentation
 
-os.environ["COSMOS_VERSION"] = "1.1.1"
-os.environ["COSMOS_TOKEN"] = "password"
-os.environ["COSMOS_LOG_LEVEL"] = "DEBUG"
-os.environ["COSMOS_SCHEMA"] = "http"
-os.environ["COSMOS_HOSTNAME"] = "127.0.0.1"
-os.environ["COSMOS_PORT"] = "2900"
+os.environ["COSMOS_USER"] = ""
+os.environ["COSMOS_TOKEN"] = ""
+os.environ["COSMOS_CLIENT_ID"] = ""
+os.environ["COSMOS_SECRET"] = ""
+os.environ["COSMOS_LOG_LEVEL"] = "INFO"
+os.environ["COSMOS_SCHEMA"] = "https"
+os.environ["COSMOS_HOSTNAME"] = ""
+os.environ["COSMOS_PORT"] = "443"
 
 from cosmosc2 import *
 
