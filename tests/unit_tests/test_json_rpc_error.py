@@ -7,7 +7,7 @@ test_json_rpc_error.py
 
 import unittest
 
-from cosmosc2.json_rpc.error import JsonRpcError
+from cosmosc2.json_rpc.error import CosmosJsonRpcError
 
 
 class TestJsonRpcError(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestJsonRpcError(unittest.TestCase):
         Test json request
         """
         json_request_example = {"code": "1234", "message": "foobar", "data": {}}
-        request = JsonRpcError.from_hash(json_request_example)
+        request = CosmosJsonRpcError.from_hash(json_request_example)
         print(request)
         self.assertEqual(request.code, 1234)
         self.assertIsNotNone(request.message)
@@ -28,7 +28,7 @@ class TestJsonRpcError(unittest.TestCase):
         """
         json_request_example = {"message": "foobar", "data": {}}
         with self.assertRaises(KeyError) as context:
-            JsonRpcError.from_hash(json_request_example)
+            CosmosJsonRpcError.from_hash(json_request_example)
             self.assertTrue("Invalid" in context.exception)
 
 

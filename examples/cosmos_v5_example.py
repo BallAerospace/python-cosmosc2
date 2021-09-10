@@ -12,6 +12,9 @@ os.environ["COSMOS_PORT"] = "2900"
 
 from cosmosc2 import *
 
+print(cosmos_status())
+print(cosmos_health())
+
 # ~ # telemetry.py
 print(tlm("INST HEALTH_STATUS TEMP1"))
 print(tlm_raw("INST HEALTH_STATUS TEMP1"))
@@ -52,6 +55,9 @@ get_cmd_time()
 get_cmd_buffer("INST", "COLLECT")
 cmd_no_range_check("INST COLLECT with TYPE NORMAL, TEMP 50.0")
 
+
+# timeline_api.py
+print(cosmos_timelines())
 
 update_scope("UPDATE")
 

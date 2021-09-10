@@ -16,7 +16,7 @@ json_rpc/__init__.py
 from cosmosc2.environment import JSON_RPC_VERSION
 
 
-class JsonRpc(dict):
+class CosmosJsonRpc(dict):
     """Base class for all JSON Remote Procedure Calls.
 
     Provides basic comparison and Hash to JSON conversions.

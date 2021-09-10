@@ -5,4 +5,7 @@ python setup.py bdist_wheel
 twine upload dist/*
 
 1.0.0
-* TODO
+ - alpha release of python cosmosc2
+
+1.0.1
+ - TODO

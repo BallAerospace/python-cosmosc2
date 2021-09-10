@@ -20,6 +20,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app/
 
+COPY ./requirements* ./
+
 RUN apk add --no-cache --virtual .build-dependencies \
         gcc musl-dev python3-dev \
     && apk add --update --no-cache git python3 py3-pip \

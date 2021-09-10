@@ -8,7 +8,7 @@ test_json_rpc_request.py
 import unittest
 
 from cosmosc2.exceptions import CosmosRequestError
-from cosmosc2.json_rpc.request import JsonRpcRequest
+from cosmosc2.json_rpc.request import CosmosJsonRpcRequest
 
 
 class TestJsonRpc(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestJsonRpc(unittest.TestCase):
                 "id": 110
             }
         """
-        request = JsonRpcRequest.from_json(json_request_example)
+        request = CosmosJsonRpcRequest.from_json(json_request_example)
         self.assertEqual(request.json_rpc, "2.0")
         self.assertIsNotNone(request.id)
         self.assertIsNotNone(request.method)
@@ -43,7 +43,7 @@ class TestJsonRpc(unittest.TestCase):
                 "id": 110
             }
         """
-        request = JsonRpcRequest.from_json(json_request_example)
+        request = CosmosJsonRpcRequest.from_json(json_request_example)
         self.assertEqual(request.json_rpc, "2.0")
         self.assertIsNotNone(request.id)
         self.assertIsNotNone(request.method)
@@ -55,7 +55,7 @@ class TestJsonRpc(unittest.TestCase):
         """
         json_request_example = '{"jsonrpc": "1.0", "method": "connect_interface", "params": ["EXAMPLE_INT"]}'
         with self.assertRaises(CosmosRequestError) as context:
-            JsonRpcRequest.from_json(json_request_example)
+            CosmosJsonRpcRequest.from_json(json_request_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_bad_request(self):
@@ -66,7 +66,7 @@ class TestJsonRpc(unittest.TestCase):
             '{"method": "connect_interface", "params": ["EXAMPLE_INT"], "id": 110}'
         )
         with self.assertRaises(CosmosRequestError) as context:
-            JsonRpcRequest.from_json(json_request_example)
+            CosmosJsonRpcRequest.from_json(json_request_example)
             self.assertTrue("jsonrpc" in context.exception)
 
 

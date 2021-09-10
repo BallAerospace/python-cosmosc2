@@ -13,11 +13,11 @@ json_rpc/__init__.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-from cosmosc2.json_rpc.error import JsonRpcError
-from cosmosc2.json_rpc.request import JsonRpcRequest
+from cosmosc2.json_rpc.error import CosmosJsonRpcError
+from cosmosc2.json_rpc.request import CosmosJsonRpcRequest
 from cosmosc2.json_rpc.response import (
-    JsonRpcResponse,
-    JsonRpcErrorResponse,
-    JsonRpcSuccessResponse,
+    CosmosJsonRpcResponse,
+    CosmosJsonRpcErrorResponse,
+    CosmosJsonRpcSuccessResponse,
     convert_json_class,
 )

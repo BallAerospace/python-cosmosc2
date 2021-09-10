@@ -18,13 +18,19 @@ import os
 from cosmosc2.__version__ import __title__, __version__
 
 
-_cosmosc2_version = "COSMOSC2_VERSION"
+_cosmos_version = "COSMOS_VERSION"
+
+_cosmos_user = "COSMOS_USER"
+
+_cosmos_client = "COSMOS_CLIENT"
 
 _cosmos_token = "COSMOS_TOKEN"
 
 _default_scope = "COSMOS_SCOPE"
 
 _default_schema = "COSMOS_SCHEMA"
+
+_default_ws_schema = "COSMOS_WS_SCHEMA"
 
 _default_hostname = "COSMOS_HOSTNAME"
 
@@ -40,6 +46,8 @@ _user_agent = "COSMOS_USER_AGENT"
 
 COSMOS_SCHEMA = os.environ.get(_default_schema, "http")
 
+COSMOS_WS_SCHEMA = os.environ.get(_default_ws_schema, "ws")
+
 COSMOS_HOSTNAME = os.environ.get(_default_hostname, "127.0.0.1")
 
 try:
@@ -49,9 +57,13 @@ except TypeError:
 
 COSMOS_SCOPE = os.environ.get(_default_scope, "DEFAULT")
 
+COSMOS_USER = os.environ.get(_cosmos_user)
+
+COSMOS_CLIENT = os.environ.get(_cosmos_client)
+
 COSMOS_TOKEN = os.environ.get(_cosmos_token, "SuperSecret")
 
-COSMOSC2_VERSION = os.environ.get(_cosmosc2_version, __version__)
+COSMOS_VERSION = os.environ.get(_cosmos_version, "N/A")
 
 JSON_RPC_VERSION = os.environ.get(_json_rpc_version, "2.0")
 
@@ -63,16 +75,17 @@ except TypeError:
     MAX_RETRY_COUNT = 3
 
 _default_user_agent = [
-    "{}:{}:{}".format(__title__, COSMOSC2_VERSION, JSON_RPC_VERSION),
+    f"{__title__}:{__version__}:{JSON_RPC_VERSION}",
+    f"{COSMOS_USER}:{COSMOS_VERSION}"
 ]
 
 if os.name == "nt":
     _default_user_agent.append(
-        "{}:{}".format(os.environ.get("COMPUTERNAME"), os.environ.get("USERNAME"))
+        f"{os.environ.get('COMPUTERNAME')}:{os.environ.get('USERNAME')}"
     )
 else:
     _default_user_agent.append(
-        "{}:{}".format(os.environ.get("HOSTNAME"), os.environ.get("USER"))
+        f"{os.environ.get('HOSTNAME')}:{os.environ.get('USER')}"
     )
 
 USER_AGENT = os.environ.get(_user_agent, " ".join(_default_user_agent))

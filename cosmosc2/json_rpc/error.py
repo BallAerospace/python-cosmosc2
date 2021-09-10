@@ -16,7 +16,7 @@ json_rpc/error.py
 from cosmosc2.environment import JSON_RPC_VERSION
 
 
-class JsonRpcError(dict):
+class CosmosJsonRpcError(dict):
     """Represents a JSON Remote Procedure Call Error"""
 
     def __init__(self, code, message, data=None):

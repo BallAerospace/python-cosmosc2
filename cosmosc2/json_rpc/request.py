@@ -17,10 +17,10 @@ import json
 
 from cosmosc2.environment import JSON_RPC_VERSION
 from cosmosc2.exceptions import CosmosRequestError
-from cosmosc2.json_rpc.base import JsonRpc
+from cosmosc2.json_rpc.base import CosmosJsonRpc
 
 
-class JsonRpcRequest(JsonRpc):
+class CosmosJsonRpcRequest(CosmosJsonRpc):
     """Represents a JSON Remote Procedure Call Request"""
 
     DANGEROUS_METHODS = ["__send__", "send", "instance_eval", "instance_exec"]

@@ -7,11 +7,14 @@ test_json_rpc_response.py
 
 import unittest
 
-from cosmosc2.exceptions import CosmosResponseError
+from cosmosc2.exceptions import (
+    CosmosError,
+    CosmosResponseError,
+)
 from cosmosc2.json_rpc.response import (
-    JsonRpcResponse,
-    JsonRpcSuccessResponse,
-    JsonRpcErrorResponse,
+    CosmosJsonRpcResponse,
+    CosmosJsonRpcSuccessResponse,
+    CosmosJsonRpcErrorResponse,
 )
 
 
@@ -21,7 +24,7 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"jsonrpc": "2.0", "id": 107, "result": 0}'
-        response = JsonRpcResponse.from_bytes(json_response_example)
+        response = CosmosJsonRpcResponse.from_bytes(json_response_example)
         self.assertEqual(response.json_rpc, "2.0")
         self.assertIsNotNone(response.id)
         self.assertEqual(response.result, 0)
@@ -37,7 +40,7 @@ class TestJsonRpc(unittest.TestCase):
                 "foo": bytearray(b"\x00\x01\xcaj\x01\x81`\x00\xe4\xe3\x00\t"),
             },
         }
-        response = JsonRpcSuccessResponse.from_hash(json_response_example)
+        response = CosmosJsonRpcSuccessResponse.from_hash(json_response_example)
         self.assertEqual(response.json_rpc, "2.0")
         self.assertIsNotNone(response.id)
         self.assertNotEqual(response.result, 0)
@@ -55,7 +58,7 @@ class TestJsonRpc(unittest.TestCase):
                 {"json_class": "Float", "raw": "NaN"},
             ],
         }
-        response = JsonRpcSuccessResponse.from_hash(json_response_example)
+        response = CosmosJsonRpcSuccessResponse.from_hash(json_response_example)
         self.assertEqual(response.json_rpc, "2.0")
         self.assertIsNotNone(response.id)
         self.assertNotEqual(response.result, 0)
@@ -65,8 +68,8 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"id": 107, "result": 0}'
-        with self.assertRaises(CosmosResponseError) as context:
-            JsonRpcResponse.from_bytes(json_response_example)
+        with self.assertRaises(CosmosError) as context:
+            CosmosJsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_bad_response_missing_id(self):
@@ -74,8 +77,8 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"jsonrpc": "1.0", "result": {}}'
-        with self.assertRaises(CosmosResponseError) as context:
-            JsonRpcResponse.from_bytes(json_response_example)
+        with self.assertRaises(CosmosError) as context:
+            CosmosJsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_bad_response_version(self):
@@ -83,8 +86,8 @@ class TestJsonRpc(unittest.TestCase):
         Test json response
         """
         json_response_example = b'{"jsonrpc": "1.0", "id": 107, "result": 0}'
-        with self.assertRaises(CosmosResponseError) as context:
-            JsonRpcResponse.from_bytes(json_response_example)
+        with self.assertRaises(CosmosError) as context:
+            CosmosJsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("jsonrpc" in context.exception)
 
     def test_error_response(self):
@@ -96,7 +99,7 @@ class TestJsonRpc(unittest.TestCase):
             "id": 107,
             "error": {"code": "1234", "message": "foobar", "data": {"foo": "bar"}},
         }
-        response = JsonRpcErrorResponse.from_hash(json_response_example)
+        response = CosmosJsonRpcErrorResponse.from_hash(json_response_example)
         self.assertEqual(response.json_rpc, "2.0")
         self.assertIsNotNone(response.id)
         self.assertIsNotNone(response.error)
@@ -108,7 +111,7 @@ class TestJsonRpc(unittest.TestCase):
         """
         json_response_example = b"foobar"
         with self.assertRaises(Exception) as context:
-            JsonRpcResponse.from_bytes(json_response_example)
+            CosmosJsonRpcResponse.from_bytes(json_response_example)
             self.assertTrue("msg" in context.exception)
 
 

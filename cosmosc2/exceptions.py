@@ -13,8 +13,6 @@ exceptions.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-from cosmosc2.json_rpc import *
-
 
 class CosmosError(RuntimeError):
     """
@@ -41,18 +39,26 @@ class CosmosCheckError(CosmosError):
 
 class CosmosRequestError(CosmosError):
     """
-    TODO
+    CosmosRequestError 
+    
+    Parameters:
+        message (str): The Request Error from Cosmos v5
+        request (cosmosc2.execptions.CosmosJsonRpcRequest): CosmosJsonRpcRequest v5
     """
-    def __init__(self, message: str, request: JsonRpcRequest):
+    def __init__(self, message: str, request):
         super().__init__(message, request)
         self.request = request
 
 
 class CosmosResponseError(CosmosError):
     """
-    TODO
+    CosmosResponseError
+
+    Parameters:
+        request (cosmosc2.execptions.CosmosJsonRpcRequest): CosmosJsonRpcRequest v5
+        response (cosmosc2.execptions.CosmosJsonRpcErrorResponse): CosmosJsonRpcErrorResponse v5
     """
-    def __init__(self, request: JsonRpcRequest, response: JsonRpcErrorResponse):
+    def __init__(self, request, response):
         super().__init__(request, response)
         self.request = request
         self.response = response

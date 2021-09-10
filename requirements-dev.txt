@@ -25,3 +25,5 @@ regex==2021.7.6
 requests==2.25.1
 toml==0.10.2
 urllib3==1.26.6
+websockets==9.1
+Sphinx==4.1.2

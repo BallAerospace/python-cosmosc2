@@ -9,7 +9,7 @@ import os
 import unittest
 from unittest.mock import patch, MagicMock
 
-from cosmosc2.connection import Connection
+from cosmosc2.connection import CosmosConnection
 
 
 class TestConnection(unittest.TestCase):
@@ -21,24 +21,24 @@ class TestConnection(unittest.TestCase):
         """
         Test json request
         """
-        connection = Connection(hostname=self.HOST, port=self.PORT)
+        connection = CosmosConnection(hostname=self.HOST, port=self.PORT)
         post.assert_not_called()
         self.assertIsNotNone(connection._session)
-        self.assertIsNotNone(connection.url)
-        self.assertTrue(self.HOST in connection.url)
-        self.assertTrue(str(self.PORT) in connection.url)
+        self.assertIsNotNone(connection.request_url)
+        self.assertTrue(self.HOST in connection.request_url)
+        self.assertTrue(str(self.PORT) in connection.request_url)
 
     @patch("cosmosc2.connection.Session.post")
     def test_object_localhost(self, post):
         """
         Test json request
         """
-        connection = Connection()
+        connection = CosmosConnection()
         post.assert_not_called()
         self.assertIsNotNone(connection._session)
-        self.assertIsNotNone(connection.url)
-        self.assertTrue(self.HOST in connection.url)
-        self.assertTrue("2900" in connection.url)
+        self.assertIsNotNone(connection.request_url)
+        self.assertTrue(self.HOST in connection.request_url)
+        self.assertTrue("2900" in connection.request_url)
 
     @patch("cosmosc2.connection.Session.post")
     def test_object_tacocat(self, post):
@@ -46,12 +46,12 @@ class TestConnection(unittest.TestCase):
         Test json request
         """
         hostname = "tacocat"
-        connection = Connection(hostname=hostname, port=self.PORT)
+        connection = CosmosConnection(hostname=hostname, port=self.PORT)
         post.assert_not_called()
         self.assertIsNotNone(connection._session)
-        self.assertIsNotNone(connection.url)
-        self.assertTrue(hostname in connection.url)
-        self.assertTrue(str(self.PORT) in connection.url)
+        self.assertIsNotNone(connection.request_url)
+        self.assertTrue(hostname in connection.request_url)
+        self.assertTrue(str(self.PORT) in connection.request_url)
 
     @patch("cosmosc2.connection.Session.post")
     def test_connection(self, post):
@@ -60,7 +60,7 @@ class TestConnection(unittest.TestCase):
         """
         ret = b'{"jsonrpc": "2.0", "id": 107, "result": 0}'
         post.return_value = MagicMock(status_code=200, content=ret)
-        connection = Connection()
+        connection = CosmosConnection()
         connection.json_rpc_request(self.test_connection.__name__)
         self.assertIsNotNone(connection._session)
         post.assert_called_once()
@@ -73,7 +73,7 @@ class TestConnection(unittest.TestCase):
         """
         sleep.return_value = None
         post.return_value = MagicMock(side_effect=ConnectionRefusedError("test"))
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_connection_refused_error.__name__)
         self.assertIsNotNone(connection._session)
@@ -85,7 +85,7 @@ class TestConnection(unittest.TestCase):
         Test connection
         """
         post.return_value = MagicMock(side_effect=ConnectionError("test"))
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_connection_error.__name__)
         self.assertIsNotNone(connection._session)
@@ -99,7 +99,7 @@ class TestConnection(unittest.TestCase):
         from requests import Timeout
 
         post.return_value = MagicMock(side_effect=Timeout("test"))
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_response_timeout_error.__name__)
         self.assertIsNotNone(connection._session)
@@ -111,7 +111,7 @@ class TestConnection(unittest.TestCase):
         Test connection
         """
         post.return_value = MagicMock(content=None)
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_response_none.__name__)
         self.assertIsNotNone(connection._session)
@@ -124,7 +124,7 @@ class TestConnection(unittest.TestCase):
         Test connection
         """
         post.return_value = MagicMock(status_code=500)
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_response_none.__name__)
         self.assertIsNotNone(connection._session)
@@ -136,7 +136,7 @@ class TestConnection(unittest.TestCase):
         Test connection
         """
         post.return_value = MagicMock(side_effect=ConnectionResetError("test"))
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_response_error.__name__)
         self.assertIsNotNone(connection._session)
@@ -161,7 +161,7 @@ class TestConnection(unittest.TestCase):
             }
         """
         post.return_value = MagicMock(content=ret)
-        connection = Connection()
+        connection = CosmosConnection()
         response = connection.json_rpc_request(self.test_response_result_error.__name__)
         self.assertIsNotNone(response)
         post.assert_called_once()
@@ -173,7 +173,7 @@ class TestConnection(unittest.TestCase):
         """
         ret = b'{"jsonrpc": "2.0", "id": 107}'
         post.return_value = MagicMock(content=ret)
-        connection = Connection()
+        connection = CosmosConnection()
         with self.assertRaises(RuntimeError):
             connection.json_rpc_request(self.test_response_result_invalid.__name__)
         self.assertIsNotNone(connection._session)

@@ -17,11 +17,11 @@ import json
 
 from cosmosc2.environment import JSON_RPC_VERSION
 from cosmosc2.exceptions import CosmosError
-from cosmosc2.json_rpc.base import JsonRpc
-from cosmosc2.json_rpc.error import JsonRpcError
+from cosmosc2.json_rpc.base import CosmosJsonRpc
+from cosmosc2.json_rpc.error import CosmosJsonRpcError
 
 
-class JsonRpcResponse(JsonRpc):
+class CosmosJsonRpcResponse(CosmosJsonRpc):
     """Represents a JSON Remote Procedure Call Response"""
 
     def __init__(self, id_):
@@ -56,12 +56,12 @@ class JsonRpcResponse(JsonRpc):
             raise CosmosError(msg, response_data)
 
         try:
-            return JsonRpcErrorResponse.from_hash(hash_)
+            return CosmosJsonRpcErrorResponse.from_hash(hash_)
         except KeyError:
             pass
 
         try:
-            return JsonRpcSuccessResponse.from_hash(hash_)
+            return CosmosJsonRpcSuccessResponse.from_hash(hash_)
         except KeyError:
             pass
 
@@ -97,7 +97,7 @@ def convert_json_class(object_):
         return object_
 
 
-class JsonRpcSuccessResponse(JsonRpcResponse):
+class CosmosJsonRpcSuccessResponse(CosmosJsonRpcResponse):
     """Represents a JSON Remote Procedure Call Success Response"""
 
     def __init__(self, id_, result):
@@ -126,7 +126,7 @@ class JsonRpcSuccessResponse(JsonRpcResponse):
         return cls(hash_["id"], hash_["result"])
 
 
-class JsonRpcErrorResponse(JsonRpcResponse):
+class CosmosJsonRpcErrorResponse(CosmosJsonRpcResponse):
     """Represents a JSON Remote Procedure Call Error Response"""
 
     def __init__(self, id_, error):
@@ -137,7 +137,7 @@ class JsonRpcErrorResponse(JsonRpcResponse):
         error -- The error object
         """
         super().__init__(id_)
-        self["error"] = JsonRpcError.from_hash(error)
+        self["error"] = CosmosJsonRpcError.from_hash(error)
 
     @property
     def error(self):
