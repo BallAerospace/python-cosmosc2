@@ -37,7 +37,7 @@ class CosmosAuthorization(requests.auth.AuthBase):
     """Class to hold token for COSMOS
 
     The CosmosAuthorization can be used to call COSMOS server methods directly:
-      auth = CosmosAuthorization(hostname: "127.0.0.1", port: 7777)
+      auth = CosmosAuthorization()
       requests.get("example.org", auth=auth)
     """
     
@@ -57,7 +57,7 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
     https://developers.redhat.com/blog/2020/01/29/api-login-and-jwt-token-generation-using-keycloak
 
     The CosmosKeycloakAuthorization can be used to call the COSMOS keycloak server methods directly:
-      auth = CosmosKeycloakAuthorization(hostname: "127.0.0.1", port: 7777)
+      auth = CosmosKeycloakAuthorization(schema="", hostname="127.0.0.1", port=7777)
       requests.get("example.org", auth=auth)
     """
 
@@ -84,11 +84,11 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         current_time = time.time()
         if self.token is None:
             self._make_token()
-        elif self.expires_at > current_time and self.refresh_expires_at > current_time:
+        elif self.expires_at < current_time and self.refresh_expires_at < current_time:
             self._make_token()
-        elif self.expires_at > current_time:
+        elif self.expires_at < current_time:
             self._refresh_token()
-        r.headers["Authorization"] = f"Bearer {self.token}"
+        r.headers["Authorization"] = self.token
         return r
 
     def _make_token(self):
