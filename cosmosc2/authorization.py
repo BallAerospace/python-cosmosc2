@@ -84,11 +84,11 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         current_time = time.time()
         if self.token is None:
             self._make_token()
-        elif self.expires_at < current_time and self.refresh_expires_at < current_time:
+        elif self.refresh_expires_at < current_time:
             self._make_token()
         elif self.expires_at < current_time:
             self._refresh_token()
-        r.headers["Authorization"] = self.token
+        r.headers["Authorization"] = f"Bearer {self.token}"
         return r
 
     def _make_token(self):
