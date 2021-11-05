@@ -28,7 +28,7 @@ def generate_auth():
     """
     Pick Auth class base on environment variables
     """
-    if COSMOS_USER is None or COSMOS_CLIENT_ID is None:
+    if COSMOS_API_USER is None:
         return CosmosAuthorization()
     return CosmosKeycloakAuthorization()
 
@@ -40,7 +40,7 @@ class CosmosAuthorization(requests.auth.AuthBase):
       auth = CosmosAuthorization()
       requests.get("example.org", auth=auth)
     """
-    
+
     def __call__(self, r: requests.Request):
         r.headers["Authorization"] = COSMOS_TOKEN
         return r
@@ -63,9 +63,9 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
 
     def __init__(
         self,
-        schema: str = COSMOS_SCHEMA,
-        hostname: str = COSMOS_HOSTNAME,
-        port: int = COSMOS_PORT,
+        schema: str = COSMOS_API_SCHEMA,
+        hostname: str = COSMOS_API_HOSTNAME,
+        port: int = COSMOS_API_PORT,
     ):
         """Constructor
 
@@ -79,7 +79,7 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         self.expires_at = None
         self.refresh_expires_at = None
         self.token = None
-    
+
     def __call__(self, r: requests.Request):
         current_time = time.time()
         if self.token is None:
@@ -123,9 +123,13 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         return -- request.Response
             https://docs.python-requests.org/en/master/user/quickstart/#json-response-content
         """
+        client_id = COSMOS_API_CLIENT
+        if client_id == None:
+            client_id = 'api'
+
         request_kwargs = {
             "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",
-            "data": f"username={COSMOS_USER}&password={COSMOS_TOKEN}&client_id={COSMOS_CLIENT_ID}&client_secret={COSMOS_SECRET}&grant_type=password&scope=openid",
+            "data": f"username={COSMOS_API_USER}&password={COSMOS_API_PASSWORD}&client_id={client_id}&grant_type=password&scope=openid",
             "headers": {
                 "User-Agent": USER_AGENT,
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -175,7 +179,7 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         """
         request_kwargs = {
             "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",
-            "data": f"client_id={COSMOS_USER}&grant_type=refresh_token&refresh_token={self.refresh_token}",
+            "data": f"client_id={COSMOS_API_USER}&grant_type=refresh_token&refresh_token={self.refresh_token}",
             "headers": {
                 "User-Agent": USER_AGENT,
                 "Content-Type": "application/x-www-form-urlencoded",

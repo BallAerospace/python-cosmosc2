@@ -43,9 +43,9 @@ class CosmosConnection(ContextDecorator):
 
     def __init__(
         self,
-        schema: str = COSMOS_SCHEMA,
-        hostname: str = COSMOS_HOSTNAME,
-        port: int = COSMOS_PORT,
+        schema: str = COSMOS_API_SCHEMA,
+        hostname: str = COSMOS_API_HOSTNAME,
+        port: int = COSMOS_API_PORT,
         timeout: float = 5.0,
         scope: str = COSMOS_SCOPE,
         auth: AuthBase = None,
@@ -236,8 +236,8 @@ class CosmosWSClient(Thread):
 
     def __init__(self,
         schema: str = COSMOS_WS_SCHEMA,
-        hostname: str = COSMOS_HOSTNAME,
-        port: int = COSMOS_PORT,
+        hostname: str = COSMOS_API_HOSTNAME,
+        port: int = COSMOS_API_PORT,
     ):
         super().__init__()
         self._tasks = {}

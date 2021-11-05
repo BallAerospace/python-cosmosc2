@@ -4,11 +4,11 @@ import sys
 # See cosmosc2/docs/environment.md for environment documentation
 
 os.environ["COSMOS_VERSION"] = "1.1.1"
-os.environ["COSMOS_TOKEN"] = "password"
+os.environ["COSMOS_API_PASSWORD"] = "password"
 os.environ["COSMOS_LOG_LEVEL"] = "DEBUG"
-os.environ["COSMOS_SCHEMA"] = "http"
-os.environ["COSMOS_HOSTNAME"] = "127.0.0.1"
-os.environ["COSMOS_PORT"] = "2900"
+os.environ["COSMOS_API_SCHEMA"] = "http"
+os.environ["COSMOS_API_HOSTNAME"] = "127.0.0.1"
+os.environ["COSMOS_API_PORT"] = "2900"
 
 from cosmosc2 import *
 
