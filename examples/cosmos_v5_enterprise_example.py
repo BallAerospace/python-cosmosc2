@@ -23,9 +23,14 @@ print(tlm_with_units("INST HEALTH_STATUS TEMP1"))
 print(tlm_variable("INST HEALTH_STATUS TEMP1", "RAW"))
 print(set_tlm("INST HEALTH_STATUS TEMP1 = 5"))
 print(get_tlm_packet("INST", "HEALTH_STATUS"))
-print(get_tlm_values(
-    ["INST__HEALTH_STATUS__TEMP1__CONVERTED", "INST__HEALTH_STATUS__TEMP2__CONVERTED"]
-))
+print(
+    get_tlm_values(
+        [
+            "INST__HEALTH_STATUS__TEMP1__CONVERTED",
+            "INST__HEALTH_STATUS__TEMP2__CONVERTED",
+        ]
+    )
+)
 print(get_target_list())
 print(get_target("INST"))
 print(get_tlm_buffer("INST", "HEALTH_STATUS"))

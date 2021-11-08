@@ -42,7 +42,7 @@ class CosmosAuthorization(requests.auth.AuthBase):
     """
 
     def __call__(self, r: requests.Request):
-        r.headers["Authorization"] = COSMOS_TOKEN
+        r.headers["Authorization"] = COSMOS_API_PASSWORD
         return r
 
     def __repr__(self):
@@ -125,7 +125,7 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         """
         client_id = COSMOS_API_CLIENT
         if client_id == None:
-            client_id = 'api'
+            client_id = "api"
 
         request_kwargs = {
             "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",

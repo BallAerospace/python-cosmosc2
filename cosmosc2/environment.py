@@ -85,8 +85,6 @@ if os.name == "nt":
         f"{os.environ.get('COMPUTERNAME')}:{os.environ.get('USERNAME')}"
     )
 else:
-    _default_user_agent.append(
-        f"{os.environ.get('HOSTNAME')}:{os.environ.get('USER')}"
-    )
+    _default_user_agent.append(f"{os.environ.get('HOSTNAME')}:{os.environ.get('USER')}")
 
 USER_AGENT = os.environ.get(_user_agent, " ".join(_default_user_agent))
