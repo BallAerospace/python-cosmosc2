@@ -17,26 +17,23 @@ import os
 
 from cosmosc2.__version__ import __title__, __version__
 
-
 _cosmos_version = "COSMOS_VERSION"
 
-_cosmos_user = "COSMOS_USER"
+_cosmos_api_user = "COSMOS_API_USER"
 
-_cosmos_client_id = "COSMOS_CLIENT_ID"
+_cosmos_api_client = "COSMOS_API_CLIENT"
 
-_cosmos_secret = "COSMOS_SECRET"
-
-_cosmos_token = "COSMOS_TOKEN"
+_cosmos_api_password = "COSMOS_API_PASSWORD"
 
 _default_scope = "COSMOS_SCOPE"
 
-_default_schema = "COSMOS_SCHEMA"
+_cosmos_api_schema = "COSMOS_API_SCHEMA"
 
 _default_ws_schema = "COSMOS_WS_SCHEMA"
 
-_default_hostname = "COSMOS_HOSTNAME"
+_cosmos_api_hostname = "COSMOS_API_HOSTNAME"
 
-_default_port = "COSMOS_PORT"
+_cosmos_api_port = "COSMOS_API_PORT"
 
 _json_rpc_version = "COSMOS_JSON_RPC_VERSION"
 
@@ -46,26 +43,24 @@ _max_retry_count = "COSMOS_MAX_RETRY_COUNT"
 
 _user_agent = "COSMOS_USER_AGENT"
 
-COSMOS_SCHEMA = os.environ.get(_default_schema, "http")
+COSMOS_API_SCHEMA = os.environ.get(_cosmos_api_schema, "http")
 
 COSMOS_WS_SCHEMA = os.environ.get(_default_ws_schema, "ws")
 
-COSMOS_HOSTNAME = os.environ.get(_default_hostname, "127.0.0.1")
+COSMOS_API_HOSTNAME = os.environ.get(_cosmos_api_hostname, "127.0.0.1")
 
 try:
-    COSMOS_PORT = int(os.environ.get(_default_port))
+    COSMOS_API_PORT = int(os.environ.get(_cosmos_api_port))
 except TypeError:
-    COSMOS_PORT = 2900
+    COSMOS_API_PORT = 2900
 
 COSMOS_SCOPE = os.environ.get(_default_scope, "DEFAULT")
 
-COSMOS_USER = os.environ.get(_cosmos_user)
+COSMOS_API_USER = os.environ.get(_cosmos_api_user)
 
-COSMOS_CLIENT_ID = os.environ.get(_cosmos_client_id)
+COSMOS_API_CLIENT = os.environ.get(_cosmos_api_client)
 
-COSMOS_SECRET = os.environ.get(_cosmos_secret)
-
-COSMOS_TOKEN = os.environ.get(_cosmos_token, "SuperSecret")
+COSMOS_API_PASSWORD = os.environ.get(_cosmos_api_password, "SuperSecret")
 
 COSMOS_VERSION = os.environ.get(_cosmos_version)
 
@@ -82,16 +77,14 @@ _default_user_agent = [
     f"{__title__}:{__version__}:{JSON_RPC_VERSION}:({COSMOS_VERSION})",
 ]
 
-if COSMOS_USER is not None:
-    _default_user_agent[0] += f":({COSMOS_USER})"
+if COSMOS_API_USER is not None:
+    _default_user_agent[0] += f":({COSMOS_API_USER})"
 
 if os.name == "nt":
     _default_user_agent.append(
         f"{os.environ.get('COMPUTERNAME')}:{os.environ.get('USERNAME')}"
     )
 else:
-    _default_user_agent.append(
-        f"{os.environ.get('HOSTNAME')}:{os.environ.get('USER')}"
-    )
+    _default_user_agent.append(f"{os.environ.get('HOSTNAME')}:{os.environ.get('USER')}")
 
 USER_AGENT = os.environ.get(_user_agent, " ".join(_default_user_agent))

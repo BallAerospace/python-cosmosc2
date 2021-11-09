@@ -43,9 +43,9 @@ class CosmosConnection(ContextDecorator):
 
     def __init__(
         self,
-        schema: str = COSMOS_SCHEMA,
-        hostname: str = COSMOS_HOSTNAME,
-        port: int = COSMOS_PORT,
+        schema: str = COSMOS_API_SCHEMA,
+        hostname: str = COSMOS_API_HOSTNAME,
+        port: int = COSMOS_API_PORT,
         timeout: float = 5.0,
         scope: str = COSMOS_SCOPE,
         auth: AuthBase = None,
@@ -100,7 +100,9 @@ class CosmosConnection(ContextDecorator):
             resp = self._make_json_rpc_request(json_rpc_request.to_hash())
             try:
                 json_rpc_response = CosmosJsonRpcResponse.from_bytes(resp.content)
-                LOGGER.debug("response %s %s", type(json_rpc_response), json_rpc_response)
+                LOGGER.debug(
+                    "response %s %s", type(json_rpc_response), json_rpc_response
+                )
                 return json_rpc_response.result
             except AttributeError:
                 return json_rpc_response
@@ -227,17 +229,17 @@ class CosmosConnection(ContextDecorator):
         return resp
 
 
-logger = logging.getLogger('websockets')
+logger = logging.getLogger("websockets")
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
 
 class CosmosWSClient(Thread):
-
-    def __init__(self,
+    def __init__(
+        self,
         schema: str = COSMOS_WS_SCHEMA,
-        hostname: str = COSMOS_HOSTNAME,
-        port: int = COSMOS_PORT,
+        hostname: str = COSMOS_API_HOSTNAME,
+        port: int = COSMOS_API_PORT,
     ):
         super().__init__()
         self._tasks = {}
@@ -260,8 +262,7 @@ class CosmosWSClient(Thread):
     def subscribe(self, id_, sub_msg, callback):
         def _subscribe():
             if id_ not in self._tasks:
-                task = self._loop.create_task(
-                    self._listen(sub_msg, callback))
+                task = self._loop.create_task(self._listen(sub_msg, callback))
                 self._tasks[id_] = task
 
         self._loop.call_soon_threadsafe(_subscribe)
@@ -285,7 +286,7 @@ class CosmosWSClient(Thread):
                         data = json.loads(data)
                         callback(data)
                 except Exception as e:
-                    print('ERROR; RESTARTING SOCKET IN 2 SECONDS', e)
+                    print("ERROR; RESTARTING SOCKET IN 2 SECONDS", e)
                     await asyncio.sleep(2, loop=self._loop)
         finally:
             self._tasks.pop(url, None)

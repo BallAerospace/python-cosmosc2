@@ -31,7 +31,9 @@ def connect_interface(interface_name, *params):
     Syntax:
         connect_interface("<Interface Name>", <Interface Parameters (optional)>)
     """
-    return cosmosc2.COSMOS.json_rpc_request("connect_interface", interface_name, *params)
+    return cosmosc2.COSMOS.json_rpc_request(
+        "connect_interface", interface_name, *params
+    )
 
 
 def disconnect_interface(interface_name):
@@ -62,6 +64,7 @@ def get_all_router_info():
     """
     return cosmosc2.COSMOS.json_rpc_request("get_all_router_info")
 
+
 def connect_router(router_name, *params):
     """The connect_router method connects a COSMOS router.
     Syntax:
@@ -79,8 +82,8 @@ def disconnect_router(router_name):
 
 
 def get_all_target_info():
-    """The get_all_target_info method returns information about all targets. 
-    The return value is an array of arrays where each subarray contains the 
+    """The get_all_target_info method returns information about all targets.
+    The return value is an array of arrays where each subarray contains the
     target name, interface name, command count, and telemetry count for a target.
     Syntax:
         target_info = get_all_target_info()
@@ -90,7 +93,9 @@ def get_all_target_info():
 
 def get_target_ignored_parameters(target_name):
     """ """
-    return cosmosc2.COSMOS.json_rpc_request("get_target_ignored_parameters", target_name)
+    return cosmosc2.COSMOS.json_rpc_request(
+        "get_target_ignored_parameters", target_name
+    )
 
 
 def get_target_ignored_items(target_name):
@@ -140,7 +145,9 @@ def get_packet_loggers():
 
 def get_packet_logger_info(packet_logger_name):
     """ """
-    return cosmosc2.COSMOS.json_rpc_request("get_packet_logger_info", packet_logger_name)
+    return cosmosc2.COSMOS.json_rpc_request(
+        "get_packet_logger_info", packet_logger_name
+    )
 
 
 def get_all_packet_logger_info():
@@ -220,12 +227,16 @@ def stop_tlm_log(packet_log_writer_name="ALL"):
 
 def start_raw_logging_interface(interface_name="ALL"):
     """ """
-    return cosmosc2.COSMOS.json_rpc_request("start_raw_logging_interface", interface_name)
+    return cosmosc2.COSMOS.json_rpc_request(
+        "start_raw_logging_interface", interface_name
+    )
 
 
 def stop_raw_logging_interface(interface_name="ALL"):
     """ """
-    return cosmosc2.COSMOS.json_rpc_request("stop_raw_logging_interface", interface_name)
+    return cosmosc2.COSMOS.json_rpc_request(
+        "stop_raw_logging_interface", interface_name
+    )
 
 
 def start_raw_logging_router(router_name="ALL"):

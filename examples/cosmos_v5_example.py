@@ -4,11 +4,11 @@ import sys
 # See cosmosc2/docs/environment.md for environment documentation
 
 os.environ["COSMOS_VERSION"] = "1.1.1"
-os.environ["COSMOS_TOKEN"] = "password"
+os.environ["COSMOS_API_PASSWORD"] = "password"
 os.environ["COSMOS_LOG_LEVEL"] = "DEBUG"
-os.environ["COSMOS_SCHEMA"] = "http"
-os.environ["COSMOS_HOSTNAME"] = "127.0.0.1"
-os.environ["COSMOS_PORT"] = "2900"
+os.environ["COSMOS_API_SCHEMA"] = "http"
+os.environ["COSMOS_API_HOSTNAME"] = "127.0.0.1"
+os.environ["COSMOS_API_PORT"] = "2900"
 
 from cosmosc2 import *
 
@@ -23,9 +23,14 @@ print(tlm_with_units("INST HEALTH_STATUS TEMP1"))
 print(tlm_variable("INST HEALTH_STATUS TEMP1", "RAW"))
 print(set_tlm("INST HEALTH_STATUS TEMP1 = 5"))
 print(get_tlm_packet("INST", "HEALTH_STATUS"))
-print(get_tlm_values(
-    ["INST__HEALTH_STATUS__TEMP1__CONVERTED", "INST__HEALTH_STATUS__TEMP2__CONVERTED"]
-))
+print(
+    get_tlm_values(
+        [
+            "INST__HEALTH_STATUS__TEMP1__CONVERTED",
+            "INST__HEALTH_STATUS__TEMP2__CONVERTED",
+        ]
+    )
+)
 print(get_target_list())
 print(get_target("INST"))
 print(get_tlm_buffer("INST", "HEALTH_STATUS"))

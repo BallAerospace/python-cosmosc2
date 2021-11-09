@@ -68,7 +68,7 @@ def prompt_for_script_abort():
     answer = input("Stop running script? (y/N): ")
     try:
         if answer.lower()[0] == "y":
-            sys.exit(66) # execute order 66
+            sys.exit(66)  # execute order 66
     except IndexError:
         return False
 
@@ -87,17 +87,21 @@ def _cmd(cmd_, cmd_no_hazardous, *args):
     """Send the command and log the results
     NOTE: This is a helper method and should not be called directly"""
     try:
-        target_name, cmd_name, cmd_params = cosmosc2.COSMOS.json_rpc_request(cmd_, *args)
+        target_name, cmd_name, cmd_params = cosmosc2.COSMOS.json_rpc_request(
+            cmd_, *args
+        )
         _log_cmd(cmd_, target_name, cmd_name, cmd_params)
     except CosmosResponseError as error:
         resp_error = error.response.error().data()["instance_variables"]
         ok_to_proceed = prompt_for_hazardous(
             resp_error["@target_name"],
             resp_error["@cmd_name"],
-            resp_error["@hazardous_description"]
+            resp_error["@hazardous_description"],
         )
         if ok_to_proceed:
-            target_name, cmd_name, cmd_params = cosmosc2.COSMOS.json_rpc_request(cmd_no_hazardous, *args)
+            target_name, cmd_name, cmd_params = cosmosc2.COSMOS.json_rpc_request(
+                cmd_no_hazardous, *args
+            )
             _log_cmd(cmd_no_hazardous, target_name, cmd_name, cmd_params)
         else:
             prompt_for_script_abort()

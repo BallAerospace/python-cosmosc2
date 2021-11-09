@@ -8,10 +8,7 @@ test_authorization.py
 import unittest
 from unittest.mock import patch, MagicMock
 
-from cosmosc2.authorization import (
-    CosmosAuthorization,
-    CosmosKeycloakAuthorization
-)
+from cosmosc2.authorization import CosmosAuthorization, CosmosKeycloakAuthorization
 
 
 class TestCosmosMockRequest:
@@ -20,7 +17,6 @@ class TestCosmosMockRequest:
 
 
 class TestCosmosAuthorization(unittest.TestCase):
-        
     def test_object(self):
         """
         Test auth
@@ -29,6 +25,7 @@ class TestCosmosAuthorization(unittest.TestCase):
         requ = TestCosmosMockRequest()
         auth(requ)
         self.assertTrue("Authorization" in requ.headers)
+
 
 class TestCosmosKeycloakAuthorization(unittest.TestCase):
 
@@ -82,9 +79,9 @@ class TestCosmosKeycloakAuthorization(unittest.TestCase):
             "id_token": "",
             "not-before-policy": 0,
             "session_state": "",
-            "scope": "openid email profile"
+            "scope": "openid email profile",
         }
-        post.return_value = MagicMock(status_code=200, json=lambda : ret)
+        post.return_value = MagicMock(status_code=200, json=lambda: ret)
         requ = TestCosmosMockRequest()
         auth = CosmosKeycloakAuthorization()
         auth(requ)

@@ -192,6 +192,7 @@ def get_tlm_buffer(target_name, packet_name):
     """
     return cosmosc2.COSMOS.json_rpc_request("get_tlm_buffer", target_name, packet_name)
 
+
 def subscribe_packets(packets: list):
     """The subscribe_packets method allows the user to listen for one or more telemetry packets of data to arrive. A unique id is returned which is used to retrieve the data.
     Syntax:

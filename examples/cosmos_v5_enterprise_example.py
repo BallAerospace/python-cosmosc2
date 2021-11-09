@@ -3,14 +3,12 @@ import sys
 
 # See cosmosc2/docs/environment.md for environment documentation
 
-os.environ["COSMOS_USER"] = ""
-os.environ["COSMOS_TOKEN"] = ""
-os.environ["COSMOS_CLIENT_ID"] = ""
-os.environ["COSMOS_SECRET"] = ""
+os.environ["COSMOS_API_USER"] = "operator"
+os.environ["COSMOS_API_PASSWORD"] = "operator"
 os.environ["COSMOS_LOG_LEVEL"] = "INFO"
-os.environ["COSMOS_SCHEMA"] = "https"
-os.environ["COSMOS_HOSTNAME"] = ""
-os.environ["COSMOS_PORT"] = "443"
+os.environ["COSMOS_API_SCHEMA"] = "http"
+os.environ["COSMOS_API_HOSTNAME"] = "127.0.0.1"
+os.environ["COSMOS_API_PORT"] = "2900"
 
 from cosmosc2 import *
 
@@ -25,9 +23,14 @@ print(tlm_with_units("INST HEALTH_STATUS TEMP1"))
 print(tlm_variable("INST HEALTH_STATUS TEMP1", "RAW"))
 print(set_tlm("INST HEALTH_STATUS TEMP1 = 5"))
 print(get_tlm_packet("INST", "HEALTH_STATUS"))
-print(get_tlm_values(
-    ["INST__HEALTH_STATUS__TEMP1__CONVERTED", "INST__HEALTH_STATUS__TEMP2__CONVERTED"]
-))
+print(
+    get_tlm_values(
+        [
+            "INST__HEALTH_STATUS__TEMP1__CONVERTED",
+            "INST__HEALTH_STATUS__TEMP2__CONVERTED",
+        ]
+    )
+)
 print(get_target_list())
 print(get_target("INST"))
 print(get_tlm_buffer("INST", "HEALTH_STATUS"))

@@ -22,8 +22,7 @@ def cosmos_timelines():
         timelines = cosmos_timelines()
     """
     resp = cosmosc2.COSMOS.get(
-        "/cosmos-api/timeline",
-        headers={"Accept": "application/json"}
+        "/cosmos-api/timeline", headers={"Accept": "application/json"}
     )
     return resp.json()
 
@@ -35,7 +34,7 @@ def cosmos_timeline_activities(timeline: str):
     """
     resp = cosmosc2.COSMOS.get(
         f"/cosmos-api/timeline/{timeline}/activities",
-        headers={"Accept": "application/json"}
+        headers={"Accept": "application/json"},
     )
     return resp.json()
 
@@ -46,7 +45,6 @@ def cosmos_timeline_activity_count(timeline: str):
         count = cosmos_timeline_activity_count("alpha")
     """
     resp = cosmosc2.COSMOS.get(
-        f"/timeline/{timeline}/count",
-        headers={"Accept": "plain/txt"}
+        f"/cosmos-api/timeline/{timeline}/count", headers={"Accept": "plain/txt"}
     )
     return resp.text

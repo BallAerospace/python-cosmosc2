@@ -7,6 +7,7 @@
 # Environment Variables
 
 ## COSMOS_USER_AGENT
+
 ---
 
 > BASE, ENTERPRISE
@@ -20,6 +21,7 @@ COSMOS_USER_AGENT='MonkeyCommand:2.0.0 (alpha)'
 ```
 
 ## COSMOS_VERSION
+
 ---
 
 > BASE, ENTERPRISE
@@ -33,6 +35,7 @@ COSMOS_VERSION=MonkeyCommand:1.2.2
 ```
 
 ## COSMOS_LOG_LEVEL
+
 ---
 
 > BASE, ENTERPRISE
@@ -45,20 +48,22 @@ Example:
 COSMOS_LOG_LEVEL=DEBUG
 ```
 
-## COSMOS_SCHEMA
+## COSMOS_API_SCHEMA
+
 ---
 
 > BASE, ENTERPRISE
 
-Set the shema for Cosmos. The schema can now be set via an environment variable `COSMOS_SCHEMA` to the network schema that Cosmos is running with. Normal options are `http` or `https`. The default is `http`
+Set the schema for Cosmos. The schema can now be set via an environment variable `COSMOS_API_SCHEMA` to the network schema that Cosmos is running with. Normal options are `http` or `https`. The default is `http`
 
 Example:
 
 ```
-COSMOS_SCHEMA=http
+COSMOS_API_SCHEMA=http
 ```
 
 ## COSMOS_WS_SCHEMA
+
 ---
 
 > BASE, ENTERPRISE
@@ -71,72 +76,62 @@ Example:
 COSMOS_WS_SCHEMA=ws
 ```
 
-## COSMOS_HOSTNAME
+## COSMOS_API_HOSTNAME
+
 ---
 
 > BASE, ENTERPRISE
 
-Set the hostname for all Cosmosc2 scripts. In v0 of cosmosc2 it would default to 127.0.0.1. The hostname can now be set via an environment variable `COSMOS_HOSTNAME` to network address of the computer running Cosmos.
+Set the hostname for all Cosmosc2 scripts. In v0 of cosmosc2 it would default to 127.0.0.1. The hostname can now be set via an environment variable `COSMOS_API_HOSTNAME` to network address of the computer running Cosmos.
 
 Example:
 
 ```
-COSMOS_HOSTNAME=127.0.0.1
+COSMOS_API_HOSTNAME=127.0.0.1
 ```
 
-COSMOS_PORT
----
+## COSMOS_API_PORT
 
 > BASE, ENTERPRISE
 
-Set the port for all cosmosc2 scripts. The port can be set via an environment variable `COSMOS_PORT` to the network port of the computer running Cosmos. Note the default port for Cosmos v5 is 2900
+Set the port for all cosmosc2 scripts. The port can be set via an environment variable `COSMOS_API_PORT` to the network port of the computer running Cosmos. Note the default port for Cosmos v5 is 2900
 
 Example:
 
 ```
-COSMOS_PORT=7777
+COSMOS_API_PORT=7777
 ```
 
-## COSMOS_USER
+## COSMOS_API_USER
+
 ---
 
 > ENTERPRISE
 
-Set the user for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_USER` to the username in you Cosmos v5 Keycloak. If this is not set the user will default to python None.
+Set the user for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_API_USER` to the username in you Cosmos v5 Keycloak. If this is not set the user will default to python None.
 
 Example:
 
 ```
-COSMOS_USER=brickTamland
+COSMOS_API_USER=brickTamland
 ```
 
-## COSMOS_CLIENT_ID
+## COSMOS_API_CLIENT
+
 ---
 
 > ENTERPRISE
 
-Set the client_id for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_CLIENT_ID` to the client_id in you Cosmos v5 Keycloak. If this is not set the client_id will default to python None.
+Set the client_id for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_API_CLIENT` to the client_id in you Cosmos v5 Keycloak. If this is not set the client_id will default to 'api'.
 
 Example:
 
 ```
-COSMOS_CLIENT_ID=brick-tamland-client
-```
-
-## COSMOS_SECRET
----
-
-> ENTERPRISE
-
-Set the client_secret for all cosmosc2 enterprise scripts. To set the environment variable `COSMOS_SECRET` to the client_secret in you Cosmos v5 Keycloak. If this is not set the client_secret will default to python None.
-
-Example:
-
-```
-COSMOS_SECRET='keep it secret, keep it safe.'
+COSMOS_APi_CLIENT=brick-tamland-client
 ```
 
 ## COSMOS_SCOPE
+
 ---
 
 > BASE, ENTERPRISE
@@ -149,20 +144,22 @@ Example:
 COSMOS_SCOPE=sanDeigo
 ```
 
-## COSMOS_TOKEN
+## COSMOS_API_PASSWORD
+
 ---
 
 > BASE, ENTERPRISE
 
-Set the password for all cosmosc2 scripts. To use a password you can set the environment variable `COSMOS_TOKEN` to the password on your Cosmos v5 instance or user. If this is not set the password will default to `SuperSecret`.
+Set the password for all cosmosc2 scripts. To use a password you can set the environment variable `COSMOS_API_PASSWORD` to the password on your Cosmos v5 instance or user. If this is not set the password will default to `SuperSecret`.
 
 Example:
 
 ```
-COSMOS_TOKEN=iLoveLamp
+COSMOS_API_PASSWORD=iLoveLamp
 ```
 
 ## COSMOS_MAX_RETRY_COUNT
+
 ---
 
 > BASE, ENTERPRISE
@@ -172,5 +169,5 @@ Set the max_retry_count for all cosmosc2 scripts. To use max_retry_count you can
 Example:
 
 ```
-COSMOS_TOKEN=iLoveLamp
+## COSMOS_MAX_RETRY_COUNT=5
 ```
