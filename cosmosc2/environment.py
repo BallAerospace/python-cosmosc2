@@ -58,7 +58,7 @@ COSMOS_SCOPE = os.environ.get(_default_scope, "DEFAULT")
 
 COSMOS_API_USER = os.environ.get(_cosmos_api_user)
 
-COSMOS_API_CLIENT = os.environ.get(_cosmos_api_client)
+COSMOS_API_CLIENT = os.environ.get(_cosmos_api_client, "api")
 
 COSMOS_API_PASSWORD = os.environ.get(_cosmos_api_password, "SuperSecret")
 
