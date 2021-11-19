@@ -123,13 +123,9 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         return -- request.Response
             https://docs.python-requests.org/en/master/user/quickstart/#json-response-content
         """
-        client_id = COSMOS_API_CLIENT
-        if client_id == None:
-            client_id = "api"
-
         request_kwargs = {
             "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",
-            "data": f"username={COSMOS_API_USER}&password={COSMOS_API_PASSWORD}&client_id={client_id}&grant_type=password&scope=openid",
+            "data": f"username={COSMOS_API_USER}&password={COSMOS_API_PASSWORD}&client_id={COSMOS_API_CLIENT}&grant_type=password&scope=openid",
             "headers": {
                 "User-Agent": USER_AGENT,
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -179,7 +175,7 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         """
         request_kwargs = {
             "url": f"{self.request_url}/auth/realms/COSMOS/protocol/openid-connect/token",
-            "data": f"client_id={COSMOS_API_USER}&grant_type=refresh_token&refresh_token={self.refresh_token}",
+            "data": f"client_id={COSMOS_API_CLIENT}&grant_type=refresh_token&refresh_token={self.refresh_token}",
             "headers": {
                 "User-Agent": USER_AGENT,
                 "Content-Type": "application/x-www-form-urlencoded",

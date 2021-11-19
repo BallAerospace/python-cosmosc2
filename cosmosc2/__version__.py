@@ -16,4 +16,4 @@ __version__.py
 __title__ = "cosmosc2"
 __description__ = "Python Support for Ball Aerospace COSMOS v5"
 __url__ = "https://github.com/BallAerospace/python-cosmosc2"
-__version__ = "1.1.0"
+__version__ = "1.1.2"
