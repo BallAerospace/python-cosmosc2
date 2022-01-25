@@ -5,7 +5,7 @@
 connection.py
 """
 
-# Copyright 2021 Ball Aerospace & Technologies Corp.
+# Copyright 2022 Ball Aerospace & Technologies Corp.
 # All Rights Reserved.
 #
 # This program is free software; you can modify and/or redistribute it
@@ -13,7 +13,6 @@ connection.py
 # as published by the Free Software Foundation; version 3 with
 # attribution addendums as found in the LICENSE.txt
 
-import asyncio
 from contextlib import ContextDecorator
 import json
 import logging
@@ -21,7 +20,6 @@ from requests import Session
 from requests.auth import AuthBase
 from threading import RLock, Event, Thread
 import requests
-import websockets
 
 from cosmosc2.__version__ import __title__
 from cosmosc2.authorization import generate_auth
@@ -49,7 +47,7 @@ class CosmosConnection(ContextDecorator):
         timeout: float = 5.0,
         scope: str = COSMOS_SCOPE,
         auth: AuthBase = None,
-    ):
+    ) -> None:
         """Constructor
 
         Parameters:
@@ -227,71 +225,3 @@ class CosmosConnection(ContextDecorator):
             resp.content,
         )
         return resp
-
-
-logger = logging.getLogger("websockets")
-logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler())
-
-
-class CosmosWSClient(Thread):
-    def __init__(
-        self,
-        schema: str = COSMOS_WS_SCHEMA,
-        hostname: str = COSMOS_API_HOSTNAME,
-        port: int = COSMOS_API_PORT,
-    ):
-        super().__init__()
-        self._tasks = {}
-        self._loop = None
-        self._stop_event = None
-        self._url = f"{schema}://{hostname}:{port}"
-
-    def run(self):
-        self._loop = asyncio.new_event_loop()
-        self._stop_event = asyncio.Event(loop=self._loop)
-        try:
-            self._loop.run_until_complete(self._stop_event.wait())
-            self._loop.run_until_complete(self._clean())
-        finally:
-            self._loop.close()
-
-    def stop(self):
-        self._loop.call_soon_threadsafe(self._stop_event.set)
-
-    def subscribe(self, id_, sub_msg, callback):
-        def _subscribe():
-            if id_ not in self._tasks:
-                task = self._loop.create_task(self._listen(sub_msg, callback))
-                self._tasks[id_] = task
-
-        self._loop.call_soon_threadsafe(_subscribe)
-
-    def unsubscribe(self, id_):
-        def _unsubscribe():
-            task = self._tasks.pop(id_, None)
-            if task is not None:
-                task.cancel()
-
-        self._loop.call_soon_threadsafe(_unsubscribe)
-
-    async def _listen(self, id_, sub_msg, callback):
-        try:
-            while not self._stop_event.is_set():
-                try:
-                    url = f"{self._url}/{id_}"
-                    ws = await websockets.connect(url, loop=self._loop)
-                    await ws.send(json.dumps(sub_msg))
-                    async for data in ws:
-                        data = json.loads(data)
-                        callback(data)
-                except Exception as e:
-                    print("ERROR; RESTARTING SOCKET IN 2 SECONDS", e)
-                    await asyncio.sleep(2, loop=self._loop)
-        finally:
-            self._tasks.pop(url, None)
-
-    async def _clean(self):
-        for task in self._tasks.values():
-            task.cancel()
-        await asyncio.gather(*self._tasks.values(), loop=self._loop)
