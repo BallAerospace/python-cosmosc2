@@ -55,7 +55,12 @@ class CosmosAsyncClient:
         })
         self.stream.unsubscribe("/cosmos-api/cable")
 
-    def streaming_channel_add(self, mode, items, start_time, end_time):
+    def streaming_channel_add(self,
+        items: list,
+        mode: str = "DECOM",
+        start_time: int = None,
+        end_time: int = None,
+    ):
         data = json.dumps({
             "scope": self.scope,
             "token": self.auth,

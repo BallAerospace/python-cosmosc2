@@ -51,25 +51,27 @@ class CosmosAsyncStream(Thread):
             self._loop.run_until_complete(self._stop_event.wait())
             self._loop.run_until_complete(self._clean())
         finally:
-            self._loop.close()
+            self._close()
 
     def stop(self):
+        self._loop.call_soon_threadsafe(self._stop_event.set)
+
+    def _close(self):
         try:
-            self._loop.call_soon_threadsafe(self._stop_event.set)
+            self._loop.close()
         except Exception:
             pass
 
     async def _clean(self):
-        for endpoint, task in self._tasks.items():
-            logging.info(f"canceling endpoint {endpoint}")
-            task.cancel()
+        for task in self._tasks.values():
+            await asyncio.wait_for(task, timeout=5)
         await asyncio.gather(*self._tasks.values(), loop=self._loop)
 
     def subscribe(self, endpoint, sub_msg, callback):
         def _subscribe():
             if endpoint not in self._tasks:
-                task = self._loop.create_task(self._listen(endpoint, sub_msg, callback))
-                self._tasks[endpoint] = task
+                listen = self._listen(endpoint, sub_msg, callback)
+                self._tasks[endpoint] = self._loop.create_task(listen)
                 self._queues[endpoint] = asyncio.Queue()
                 self._events[endpoint] = asyncio.Event(loop=self._loop)
 
@@ -80,9 +82,6 @@ class CosmosAsyncStream(Thread):
             event = self._events.pop(endpoint, None)
             if event is not None:
                 event.set()
-            task = self._tasks.pop(endpoint, None)
-            if task is not None:
-                task.cancel()
 
         self._loop.call_soon_threadsafe(_unsubscribe)
 
@@ -101,6 +100,7 @@ class CosmosAsyncStream(Thread):
             await self._welcome(ws)
             await self._confirm(ws, sub_msg)
             await self._handle(endpoint, ws, callback)
+            await ws.close()
         except asyncio.CancelledError:
             logging.info(f"{endpoint} has been canceled")
         except CosmosAsyncStop:
@@ -109,9 +109,8 @@ class CosmosAsyncStream(Thread):
             logging.error(f"failed connection {endpoint}, {e}")
         except Exception as e:
             logging.exception(e)
-            await asyncio.sleep(2, loop=self._loop)
         finally:
-            self._tasks.pop(endpoint, None)
+            logging.debug(f"exitting task: {endpoint}")
             self._queues.pop(endpoint, None)
             self._events.pop(endpoint, None)
 
@@ -134,7 +133,7 @@ class CosmosAsyncStream(Thread):
     async def _handle(self, endpoint, ws, callback):
         queue = self._queues[endpoint]
         event = self._events[endpoint]
-        while event.is_set() is False or self._stop_event.is_set() is False:
+        while event.is_set() is False and self._stop_event.is_set() is False:
             await self._send(queue, ws)
             data = await ws.recv()
             data = json.loads(data)
@@ -144,12 +143,10 @@ class CosmosAsyncStream(Thread):
     async def _send(queue, ws):
         try:
             message = queue.get_nowait()
-            if message is not None:
-                logging.debug(f"sending: {message}")
-                await ws.send(json.dumps(message))
-            else:
+            if message is None:
                 raise CosmosAsyncStop()
+            else:
+                logging.info(f"sending: {message}")
+                await ws.send(json.dumps(message))
         except asyncio.QueueEmpty:
-            pass
-        except Exception:
             pass
