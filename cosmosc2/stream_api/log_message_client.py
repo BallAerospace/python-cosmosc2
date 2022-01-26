@@ -28,22 +28,50 @@ class LogMessageClient(BaseClient):
         count: int,
         timeout: int = 30,
     ) -> None:
+        """
+        The constructor for the LogMessageClient.
+
+        Parameters:
+            count (int): the number of messages to get from Cosmos.
+            timeout (int): how many seconds to wait for messages.
+        """
         super().__init__(timeout=timeout)
         self.count = count
         self._count = 0
 
     @staticmethod
     def _datetime_value(dt: datetime = None):
+        """
+        Make a datetime object into unix EPOC seconds and
+        times it by one billion?
+
+        Parameters:
+            dt (datetime): [optional] converted to int
+        """
         if dt is None:
             dt = datetime.now()
         return int(dt.timestamp() * 1000000000)
 
-    def _split_data(self, message):
+    def _split_data(self, message: str):
+        """
+        Splits the data from _extract_data and adds it to
+        instances _data list.
+
+        Parameters:
+            message (str): string to convert to dict and
+        """
         for data in json.loads(message):
             self._count += 1
             self._data.append(data)
 
     def _extract_data(self, message: dict):
+        """
+        Is used as the callback from the AsyncClient. Should
+        filter data base on dict values and pass data along.
+
+        Parameters:
+            message (dict): dict to pull information out of
+        """
         msg = message.get("message")
         typ = message.get("type")
         if self._count == self.count:
@@ -53,6 +81,12 @@ class LogMessageClient(BaseClient):
             self._split_data(msg)
 
     def get(self):
+        """
+        Get the data from the DataExtractor websocket.
+
+        Returns:
+            list: of data pulled from Cosmos.
+        """
         if self._data:
             return self._data
 

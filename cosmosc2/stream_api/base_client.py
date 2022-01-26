@@ -20,6 +20,10 @@ import time
 
 
 class BaseClient:
+    """
+        The BaseClient is designed to be a parent class for websocket
+        implamentations to expand upon.
+    """
 
     def __init__(self, timeout: int = 30) -> None:
         self._event = Event()
@@ -28,15 +32,16 @@ class BaseClient:
         self._timeout = timeout
 
     def wait(self):
+        """
+            Wait for the internal event method to or to timeout. This
+            should swallow signals from ctrl+C and return to allow the
+            rest of the program to finish.
+        """
         try:
             while not self._event.is_set():
                 time.sleep(1)
                 current_time = datetime.now().timestamp()
                 if (current_time - self._last_msg) > self._timeout:
                     self._event.set()
-        except TimeoutError:
-            logging.error(
-                f"No messages have been sent for {self._timeout} seconds"
-            )
         except KeyboardInterrupt:
             pass
