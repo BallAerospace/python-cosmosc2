@@ -21,8 +21,8 @@ import time
 
 class BaseClient:
     """
-        The BaseClient is designed to be a parent class for websocket
-        implamentations to expand upon.
+    The BaseClient is designed to be a parent class for websocket
+    implamentations to expand upon.
     """
 
     def __init__(self, timeout: int = 30) -> None:
@@ -33,9 +33,9 @@ class BaseClient:
 
     def wait(self):
         """
-            Wait for the internal event method to or to timeout. This
-            should swallow signals from ctrl+C and return to allow the
-            rest of the program to finish.
+        Wait for the internal event method to or to timeout. This
+        should swallow signals from ctrl+C and return to allow the
+        rest of the program to finish.
         """
         try:
             while not self._event.is_set():

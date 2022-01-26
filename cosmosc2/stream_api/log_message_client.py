@@ -22,7 +22,6 @@ from cosmosc2.stream_shared import CosmosAsyncClient
 
 
 class LogMessageClient(BaseClient):
-
     def __init__(
         self,
         count: int,

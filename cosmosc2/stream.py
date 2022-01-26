@@ -25,11 +25,14 @@ logger = logging.getLogger("websockets")
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
+
 class CosmosAsyncError(RuntimeError):
     pass
 
+
 class CosmosAsyncStop(StopAsyncIteration):
     pass
+
 
 class CosmosAsyncStream(Thread):
     def __init__(
@@ -87,6 +90,7 @@ class CosmosAsyncStream(Thread):
             sub_msg (dict): send to cosmos once connected
             callback (callable): method to return messages to
         """
+
         def _subscribe():
             if endpoint not in self._tasks:
                 listen = self._listen(endpoint, sub_msg, callback)
@@ -103,6 +107,7 @@ class CosmosAsyncStream(Thread):
         Parameters:
             endpoint (str): example: /cosmos-api/cable
         """
+
         def _unsubscribe():
             event = self._events.pop(endpoint, None)
             if event is not None:
@@ -118,6 +123,7 @@ class CosmosAsyncStream(Thread):
             endpoint (str): example: /cosmos-api/cable
             message (dict): json based message to send
         """
+
         def _queue():
             queue = self._queues.get(endpoint, None)
             if queue is not None:
@@ -200,7 +206,7 @@ class CosmosAsyncStream(Thread):
             data = await ws.recv()
             data = json.loads(data)
             callback(data)
-    
+
     @staticmethod
     async def _send(queue, ws):
         """

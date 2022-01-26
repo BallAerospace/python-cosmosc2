@@ -21,7 +21,6 @@ from cosmosc2.stream import CosmosAsyncStream
 
 
 class CosmosAsyncClient:
-
     def __init__(
         self,
         stream: CosmosAsyncStream,
@@ -31,7 +30,7 @@ class CosmosAsyncClient:
         self.stream = stream
         self.scope = scope
         self.auth = generate_auth() if auth is None else auth
-    
+
     def streaming_id(self):
         """
         generate the streaming id to send on the websocket.
@@ -39,12 +38,14 @@ class CosmosAsyncClient:
         Returns:
             str: json string for identifier.
         """
-        return json.dumps({
-            "channel": "StreamingChannel",
-            "scope": self.scope,
-            "token": self.auth.get(),
-        })
-    
+        return json.dumps(
+            {
+                "channel": "StreamingChannel",
+                "scope": self.scope,
+                "token": self.auth.get(),
+            }
+        )
+
     def streaming_channel_sub(self, callback):
         """
         Have the stream subscribe to the streaming channel
@@ -54,24 +55,22 @@ class CosmosAsyncClient:
         """
         self.stream.subscribe(
             "/cosmos-api/cable",
-            {
-                "command": "subscribe",
-                "identifier": self.streaming_id()
-            },
-            callback
+            {"command": "subscribe", "identifier": self.streaming_id()},
+            callback,
         )
 
     def streaming_channel_unsub(self):
         """
         Have the stream unsubscribe from the streaming channel
         """
-        self.stream.queue("/cosmos-api/cable", {
-            "command": "unsubscribe",
-            "identifier": self.streaming_id()
-        })
+        self.stream.queue(
+            "/cosmos-api/cable",
+            {"command": "unsubscribe", "identifier": self.streaming_id()},
+        )
         self.stream.unsubscribe("/cosmos-api/cable")
 
-    def streaming_channel_add(self,
+    def streaming_channel_add(
+        self,
         items: list,
         mode: str = "DECOM",
         start_time: int = None,
@@ -82,25 +81,30 @@ class CosmosAsyncClient:
         add items with a time range to the stream.
 
         Parameters:
-            items (list): 
-            mode (str): 
-            start_time (int): 
-            end_time (int): 
+            items (list):
+            mode (str):
+            start_time (int):
+            end_time (int):
         """
-        data = json.dumps({
-            "scope": self.scope,
-            "token": self.auth.get(),
-            "mode": mode,
-            "items": items,
-            "start_time": start_time,
-            "end_time": end_time,
-            "action": "add"
-        })
-        self.stream.queue("/cosmos-api/cable", {
-            "command": "message",
-            "identifier": self.streaming_id(),
-            "data": data,
-        })
+        data = json.dumps(
+            {
+                "scope": self.scope,
+                "token": self.auth.get(),
+                "mode": mode,
+                "items": items,
+                "start_time": start_time,
+                "end_time": end_time,
+                "action": "add",
+            }
+        )
+        self.stream.queue(
+            "/cosmos-api/cable",
+            {
+                "command": "message",
+                "identifier": self.streaming_id(),
+                "data": data,
+            },
+        )
 
     def message_id(self, history_count: int):
         """
@@ -109,12 +113,14 @@ class CosmosAsyncClient:
         Returns:
             history_count (str): stream history to request
         """
-        return json.dumps({
-            "channel": "MessagesChannel",
-            "scope": self.scope,
-            "token": self.auth.get(),
-            "history_count": history_count
-        }) 
+        return json.dumps(
+            {
+                "channel": "MessagesChannel",
+                "scope": self.scope,
+                "token": self.auth.get(),
+                "history_count": history_count,
+            }
+        )
 
     def message_channel_sub(self, history_count, callback):
         """
@@ -125,12 +131,9 @@ class CosmosAsyncClient:
             callback (callable): methods called when data recivied
         """
         self.stream.subscribe(
-            "/cosmos-api/cable", 
-            {
-                "command": "subscribe",
-                "identifier": self.message_id(history_count)
-            },
-            callback
+            "/cosmos-api/cable",
+            {"command": "subscribe", "identifier": self.message_id(history_count)},
+            callback,
         )
 
     def message_channel_unsub(self, history_count: int):
@@ -140,8 +143,8 @@ class CosmosAsyncClient:
         Parameters:
             history_count (int): stream history to request
         """
-        self.stream.queue("/cosmos-api/cable", {
-            "command": "unsubscribe",
-            "identifier": self.message_id(history_count)
-        })
+        self.stream.queue(
+            "/cosmos-api/cable",
+            {"command": "unsubscribe", "identifier": self.message_id(history_count)},
+        )
         self.stream.unsubscribe("/cosmos-api/cable")

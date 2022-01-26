@@ -22,12 +22,11 @@ from cosmosc2.stream_api.data_extractor_client import DataExtractorClient
 
 
 def hash_args(args):
-    return hashlib.sha1(" ".join([
-        " ".join([item for item in args.items]),
-        args.start,
-        args.end,
-        args.mode
-    ]).encode("utf-8")).hexdigest()[:8]
+    return hashlib.sha1(
+        " ".join(
+            [" ".join([item for item in args.items]), args.start, args.end, args.mode]
+        ).encode("utf-8")
+    ).hexdigest()[:8]
 
 
 def output_data_to_file(data, filename):
@@ -44,26 +43,16 @@ def output_data_to_file(data, filename):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "mode",
-        type=str,
-        choices=["CONVERTED", "DECOM", "RAW"],
-        help="item mode"
+        "mode", type=str, choices=["CONVERTED", "DECOM", "RAW"], help="item mode"
     )
     parser.add_argument(
-        "start",
-        type=str,
-        help="start time in format: '2022/01/24 11:04:19'"
+        "start", type=str, help="start time in format: '2022/01/24 11:04:19'"
     )
     parser.add_argument(
-        "end",
-        type=str,
-        help="end time in format: '2022/01/25 11:04:19'"
+        "end", type=str, help="end time in format: '2022/01/25 11:04:19'"
     )
     parser.add_argument(
-        "items",
-        type=str,
-        nargs="+",
-        help="item in format: INST.ADCS.POSX"
+        "items", type=str, nargs="+", help="item in format: INST.ADCS.POSX"
     )
     args = parser.parse_args()
 
@@ -85,6 +74,7 @@ def main():
         output_data_to_file(data, filename)
     except ValueError as e:
         logging.error(e)
+
 
 if __name__ == "__main__":
     try:

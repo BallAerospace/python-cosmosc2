@@ -23,7 +23,6 @@ from cosmosc2.stream_shared import CosmosAsyncClient
 
 
 class DataExtractorClient(BaseClient):
-
     def __init__(
         self,
         items: list,
@@ -43,9 +42,7 @@ class DataExtractorClient(BaseClient):
             timeout (int): how many seconds to wait for messages.
         """
         super().__init__(timeout=timeout)
-        self._kwargs = self._validate_args(
-            items, start_time, end_time, mode
-        )
+        self._kwargs = self._validate_args(items, start_time, end_time, mode)
 
     def _validate_args(
         self,
@@ -64,20 +61,14 @@ class DataExtractorClient(BaseClient):
             end_time (str): The end time of the time range
             mode (str): The item mode to request
         """
-        start_time_ = datetime.strptime(
-            start_time, "%Y/%m/%d %H:%M:%S"
-        )
-        end_time_ = datetime.strptime(
-            end_time, "%Y/%m/%d %H:%M:%S"
-        )
+        start_time_ = datetime.strptime(start_time, "%Y/%m/%d %H:%M:%S")
+        end_time_ = datetime.strptime(end_time, "%Y/%m/%d %H:%M:%S")
         items_ = []
-        
+
         for item in items:
             item_list = item.split(".")
             if len(item_list) != 3:
-                raise ValueError(
-                    f"incorrect item format: {item}"
-                )
+                raise ValueError(f"incorrect item format: {item}")
             item_list.insert(0, "TLM")
             item_list.append(mode)
             items_.append("__".join(item_list))
@@ -113,11 +104,13 @@ class DataExtractorClient(BaseClient):
         for data in json.loads(message):
             t = data.pop("time")
             for item, value in data.items():
-                self._data.append({
-                    "item": item,
-                    "value": value,
-                    "time": t,
-                })
+                self._data.append(
+                    {
+                        "item": item,
+                        "value": value,
+                        "time": t,
+                    }
+                )
 
     def _extract_data(self, message: dict):
         """
@@ -129,7 +122,7 @@ class DataExtractorClient(BaseClient):
         """
         msg = message.get("message")
         typ = message.get("type")
-        if msg == '[]':
+        if msg == "[]":
             self._event.set()
         elif typ is None and msg is not None:
             self._last_msg = datetime.now().timestamp()
