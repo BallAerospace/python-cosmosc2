@@ -20,4 +20,5 @@ htmlcov
 .tox
 .cache
 
-examples/*.csv
+# don't add csv files
+*.csv

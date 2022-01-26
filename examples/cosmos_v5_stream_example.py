@@ -5,7 +5,7 @@
 cosmos_v5_stream_example.py
 """
 import argparse
-from datetime import datetime
+import hashlib
 import os
 import logging
 
@@ -20,11 +20,19 @@ os.environ["COSMOS_API_PORT"] = "2900"
 
 from cosmosc2.stream_api.data_extractor_client import DataExtractorClient
 
-def output_data_to_file(data):
+
+def hash_args(args):
+    return hashlib.sha1(" ".join([
+        " ".join([item for item in args.items]),
+        args.start,
+        args.end,
+        args.mode
+    ]).encode("utf-8")).hexdigest()[:8]
+
+
+def output_data_to_file(data, filename):
     if not data:
         return
-    date_value = int(datetime.now().timestamp() * 1000000000)
-    filename = f"{date_value}.csv"
     with open(filename, "w") as f:
         f.write("ITEM,VALUE,TIME\n")
         for d in data:
@@ -59,6 +67,13 @@ def main():
     )
     args = parser.parse_args()
 
+    h = hash_args(args)
+    filename = f"{h}.csv"
+
+    if os.path.exists(filename):
+        print(filename)
+        return
+
     try:
         api = DataExtractorClient(
             items=args.items,
@@ -67,7 +82,7 @@ def main():
             mode=args.mode,
         )
         data = api.get()
-        output_data_to_file(data)
+        output_data_to_file(data, filename)
     except ValueError as e:
         logging.error(e)
 
