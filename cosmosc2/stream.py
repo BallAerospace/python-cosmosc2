@@ -146,7 +146,7 @@ class CosmosAsyncStream(Thread):
             if message is None:
                 raise CosmosAsyncStop()
             else:
-                logging.info(f"sending: {message}")
+                logging.debug(f"sending: {message}")
                 await ws.send(json.dumps(message))
         except asyncio.QueueEmpty:
             pass
