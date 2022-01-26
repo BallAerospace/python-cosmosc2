@@ -129,6 +129,13 @@ def get_limits_sets():
     return cosmosc2.COSMOS.json_rpc_request("get_limits_sets")
 
 
+def get_current_limits_set():
+    """
+    TODO
+    """
+    return cosmosc2.COSMOS.json_rpc_request("get_current_limits_set")
+
+
 def set_limits_set(limits_set):
     """
     TODO
