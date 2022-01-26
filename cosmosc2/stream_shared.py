@@ -15,27 +15,28 @@ stream_api.py
 
 import json
 
-from cosmosc2.environment import COSMOS_API_PASSWORD, COSMOS_SCOPE
-from cosmosc2.authorization import generate_auth 
+from cosmosc2.authorization import CosmosAuthorization, generate_auth
+from cosmosc2.environment import COSMOS_SCOPE
 from cosmosc2.stream import CosmosAsyncStream
 
 
 class CosmosAsyncClient:
 
-    def __init__(self,
+    def __init__(
+        self,
         stream: CosmosAsyncStream,
         scope: str = COSMOS_SCOPE,
-        auth: str = COSMOS_API_PASSWORD,
+        auth: CosmosAuthorization = None,
     ) -> None:
         self.stream = stream
         self.scope = scope
-        self.auth = auth
+        self.auth = generate_auth() if auth is None else auth
     
     def streaming_id(self):
         return json.dumps({
             "channel": "StreamingChannel",
             "scope": self.scope,
-            "token": self.auth,
+            "token": self.auth.get(),
         })
     
     def streaming_channel_sub(self, callback):
@@ -63,7 +64,7 @@ class CosmosAsyncClient:
     ):
         data = json.dumps({
             "scope": self.scope,
-            "token": self.auth,
+            "token": self.auth.get(),
             "mode": mode,
             "items": items,
             "start_time": start_time,
@@ -80,7 +81,7 @@ class CosmosAsyncClient:
         return json.dumps({
             "channel": "MessagesChannel",
             "scope": self.scope,
-            "token": self.auth,
+            "token": self.auth.get(),
             "history_count": history_count
         }) 
 

@@ -7,93 +7,32 @@ cosmos_v5_stream_example.py
 import argparse
 from datetime import datetime
 import os
-import json
 import logging
-from threading import Event
-import time
 
 # See cosmosc2/docs/environment.md for environment documentation
 
 os.environ["COSMOS_VERSION"] = "1.1.1"
-os.environ["COSMOS_API_PASSWORD"] = "www"
+os.environ["COSMOS_API_PASSWORD"] = "password"
 os.environ["COSMOS_LOG_LEVEL"] = "INFO"
 os.environ["COSMOS_WS_SCHEMA"] = "ws"
 os.environ["COSMOS_API_HOSTNAME"] = "127.0.0.1"
 os.environ["COSMOS_API_PORT"] = "2900"
 
-from cosmosc2.stream import CosmosAsyncStream
-from cosmosc2.stream_api import CosmosAsyncClient
+from cosmosc2.stream_api.data_extractor_client import DataExtractorClient
 
-EVENT = Event()
-DATA = []
-
-
-def datetime_value(dt: datetime = None):
-    if dt is None:
-        dt = datetime.now()
-    return int(dt.timestamp() * 1000000000)
-
-
-def output_data_to_file():
-    if not DATA:
+def output_data_to_file(data):
+    if not data:
         return
-    filename = f"{datetime_value()}.csv"
+    date_value = int(datetime.now().timestamp() * 1000000000)
+    filename = f"{date_value}.csv"
     with open(filename, "w") as f:
         f.write("ITEM,VALUE,TIME\n")
-        for data in DATA:
-            f.write(f"{data['item']},{data['value']},{data['time']}\n")
+        for d in data:
+            f.write(f"{d['item']},{d['value']},{d['time']}\n")
     print(filename)
 
 
-def split_data(message):
-    for data in json.loads(message):
-        t = data.pop("time")
-        for item, value in data.items():
-            DATA.append({
-                "item": item,
-                "value": value,
-                "time": t,
-            })
-
-
-def extract_data(message: dict):
-    msg = message.get("message")
-    typ = message.get("type")
-    if msg == '[]':
-        EVENT.set()
-    elif typ is None and msg is not None:
-        split_data(msg)
-
-
-def validate_args(parser: argparse.ArgumentParser):
-    args = parser.parse_args()
-    mode = args.mode
-    start_time = datetime.strptime(
-        args.start, "%Y/%m/%d %H:%M:%S"
-    )
-    end_time = datetime.strptime(
-        args.end, "%Y/%m/%d %H:%M:%S"
-    )
-    items = []
-    
-    for item in args.items:
-        item_list = item.split("__")
-        if len(item_list) != 3:
-            raise ValueError(
-                f"incorrect item format: {item}"
-            )
-        item_list.insert(0, "TLM")
-        item_list.append(mode)
-        items.append("__".join(item_list))
-
-    return {
-        "mode": mode,
-        "start_time": datetime_value(start_time),
-        "end_time": datetime_value(end_time),
-        "items": items,
-    }
-
-# item example: INST__ADCS__POSX
+# item example: INST.ADCS.POSX
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -116,35 +55,21 @@ def main():
         "items",
         type=str,
         nargs="+",
-        help="item in format: TLM__INST__ADCS__POSX__CONVERTED"
+        help="item in format: INST.ADCS.POSX"
     )
+    args = parser.parse_args()
 
     try:
-        kwargs = validate_args(parser)
+        api = DataExtractorClient(
+            items=args.items,
+            start_time=args.start,
+            end_time=args.end,
+            mode=args.mode,
+        )
+        data = api.get()
+        output_data_to_file(data)
     except ValueError as e:
         logging.error(e)
-        return
-
-    stream = CosmosAsyncStream()
-    stream.start()
-
-    client = CosmosAsyncClient(stream)
-    client.streaming_channel_sub(extract_data)
-
-    logging.debug(f"request being sent with: {kwargs}")
-    client.streaming_channel_add(**kwargs)
-
-    try:
-        while not EVENT.is_set():
-            time.sleep(1)
-    except KeyboardInterrupt:
-        EVENT.set()
-
-    client.streaming_channel_unsub()
-    stream.stop()
-
-    output_data_to_file()   
-
 
 if __name__ == "__main__":
     try:
