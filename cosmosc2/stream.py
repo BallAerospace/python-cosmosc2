@@ -163,7 +163,7 @@ class CosmosAsyncStream(Thread):
     @staticmethod
     async def _welcome(ws):
         """
-        Confrim welcome from ActionCable websocket.
+        Confirm welcome from ActionCable websocket.
 
         Parameters:
             ws (WebSocket): open websocket

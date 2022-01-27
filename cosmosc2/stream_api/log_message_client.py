@@ -2,7 +2,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 # -*- coding: latin-1 -*-
 """
-data_extractor_client.py
+log_message_client.py
 """
 
 # Copyright 2022 Ball Aerospace & Technologies Corp.
@@ -81,7 +81,7 @@ class LogMessageClient(BaseClient):
 
     def get(self):
         """
-        Get the data from the DataExtractor websocket.
+        Get the data from the LogMessage websocket.
 
         Returns:
             list: of data pulled from Cosmos.

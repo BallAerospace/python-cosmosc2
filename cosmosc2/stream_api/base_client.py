@@ -2,7 +2,7 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 # -*- coding: latin-1 -*-
 """
-data_extractor_client.py
+base_client.py
 """
 
 # Copyright 2022 Ball Aerospace & Technologies Corp.
@@ -22,7 +22,7 @@ import time
 class BaseClient:
     """
     The BaseClient is designed to be a parent class for websocket
-    implamentations to expand upon.
+    implementations to expand upon.
     """
 
     def __init__(self, timeout: int = 30) -> None:

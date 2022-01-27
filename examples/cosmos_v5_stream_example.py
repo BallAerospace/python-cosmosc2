@@ -43,7 +43,7 @@ def output_data_to_file(data, filename):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "mode", type=str, choices=["CONVERTED", "DECOM", "RAW"], help="item mode"
+        "mode", type=str, choices=["CONVERTED", "DECOM", "WITH_UNITS", "RAW"], help="item mode"
     )
     parser.add_argument(
         "start", type=str, help="start time in format: '2022/01/24 11:04:19'"
