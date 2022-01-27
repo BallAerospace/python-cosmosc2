@@ -5,7 +5,7 @@
 keycloak.py
 """
 
-# Copyright 2021 Ball Aerospace & Technologies Corp.
+# Copyright 2022 Ball Aerospace & Technologies Corp.
 # All Rights Reserved.
 #
 # This program is free software; you can modify and/or redistribute it
@@ -40,6 +40,9 @@ class CosmosAuthorization(requests.auth.AuthBase):
       auth = CosmosAuthorization()
       requests.get("example.org", auth=auth)
     """
+
+    def get(self):
+        return COSMOS_API_PASSWORD
 
     def __call__(self, r: requests.Request):
         r.headers["Authorization"] = COSMOS_API_PASSWORD
@@ -79,8 +82,8 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
         self.expires_at = None
         self.refresh_expires_at = None
         self.token = None
-
-    def __call__(self, r: requests.Request):
+    
+    def _time_logic(self):
         current_time = time.time()
         if self.token is None:
             self._make_token()
@@ -88,6 +91,13 @@ class CosmosKeycloakAuthorization(CosmosAuthorization):
             self._make_token()
         elif self.expires_at < current_time:
             self._refresh_token()
+
+    def get(self):
+        self._time_logic()
+        return f"Bearer {self.token}"
+
+    def __call__(self, r: requests.Request):
+        self._time_logic()
         r.headers["Authorization"] = f"Bearer {self.token}"
         return r
 

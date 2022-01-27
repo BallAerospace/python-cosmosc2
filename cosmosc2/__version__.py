@@ -5,7 +5,7 @@
 __version__.py
 """
 
-# Copyright 2021 Ball Aerospace & Technologies Corp.
+# Copyright 2022 Ball Aerospace & Technologies Corp.
 # All Rights Reserved.
 #
 # This program is free software; you can modify and/or redistribute it
@@ -16,4 +16,4 @@ __version__.py
 __title__ = "cosmosc2"
 __description__ = "Python Support for Ball Aerospace COSMOS v5"
 __url__ = "https://github.com/BallAerospace/python-cosmosc2"
-__version__ = "1.1.2"
+__version__ = "1.2.0"

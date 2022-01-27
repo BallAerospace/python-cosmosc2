@@ -1,4 +1,4 @@
-> Copyright 2021 Ball Aerospace & Technologies Corp.
+> Copyright 2022 Ball Aerospace & Technologies Corp.
 >
 > All Rights Reserved.
 >

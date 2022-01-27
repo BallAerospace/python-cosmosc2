@@ -19,3 +19,6 @@ htmlcov
 # due to using tox and pytest
 .tox
 .cache
+
+# don't add csv files
+*.csv
