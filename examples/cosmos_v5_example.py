@@ -1,3 +1,4 @@
+from importlib.metadata import metadata
 import os
 import sys
 
@@ -5,15 +6,34 @@ import sys
 
 os.environ["COSMOS_VERSION"] = "1.1.1"
 os.environ["COSMOS_API_PASSWORD"] = "password"
-os.environ["COSMOS_LOG_LEVEL"] = "DEBUG"
+os.environ["COSMOS_LOG_LEVEL"] = "INFO"
 os.environ["COSMOS_API_SCHEMA"] = "http"
 os.environ["COSMOS_API_HOSTNAME"] = "127.0.0.1"
 os.environ["COSMOS_API_PORT"] = "2900"
 
 from cosmosc2 import *
 
-print(cosmos_status())
-print(cosmos_health())
+status = cosmos_status()
+print(status)
+health = cosmos_health()
+
+m = cosmos_metadata()
+print(m)
+
+d = cosmos_get_metadata("DEFAULT")
+print(d)
+
+c = cosmos_search_metadata("version", "0")
+print(c)
+
+c = cosmos_search_metadata("version", "1")
+print(c)
+
+v = cosmos_show_metadata('1234')
+print(v)
+
+n = cosmos_narrative()
+print(n)
 
 # ~ # telemetry.py
 print(tlm("INST HEALTH_STATUS TEMP1"))

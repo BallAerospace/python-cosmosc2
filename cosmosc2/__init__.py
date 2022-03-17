@@ -62,11 +62,11 @@ def shutdown():
 
 
 from cosmosc2.api_shared import *
-from cosmosc2.cosmos_api import *
+from cosmosc2.calendar_api import *
 from cosmosc2.commands import *
+from cosmosc2.cosmos_api import *
 from cosmosc2.extract import *
 from cosmosc2.internal_api import *
 from cosmosc2.limits import *
 from cosmosc2.telemetry import *
-from cosmosc2.timeline_api import *
 from cosmosc2.tools import *
